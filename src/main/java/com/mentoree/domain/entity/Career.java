@@ -12,6 +12,7 @@ import static javax.persistence.FetchType.*;
 @Getter
 @NoArgsConstructor
 @Entity
+@Table(name = "career_table")
 public class Career extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

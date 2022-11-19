@@ -1,6 +1,5 @@
 package com.mentoree.domain.entity;
 
-import com.mysema.commons.lang.Assert;
 import lombok.*;
 
 import javax.persistence.*;
@@ -32,7 +31,6 @@ public class Category extends BaseTimeEntity {
 
     @Builder
     public Category(String categoryName) {
-        Assert.notNull(categoryName, "category name must not be null");
         this.categoryName = categoryName;
     }
 }
