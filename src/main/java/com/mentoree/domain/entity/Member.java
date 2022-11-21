@@ -7,8 +7,6 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static javax.persistence.FetchType.*;
-
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -30,7 +28,7 @@ public class Member extends BaseTimeEntity {
     //=== 멘토 회원 필수 정보 ===//
     private String username;
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "member", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<Career> careers = new ArrayList<>();
 
     @Builder
@@ -46,8 +44,22 @@ public class Member extends BaseTimeEntity {
         this.role = role;
     }
 
-    public void addCareer(Career career) {
-        this.careers.add(career);
+    //== 비지니스 로직 ==//
+    public void updateNickname(String nickname) {
+        if(!this.nickname.equals(nickname))
+            this.nickname = nickname;
+    }
+
+    public void updateUsername(String username) {
+        this.username = username;
+    }
+
+    public void updateCareer(List<Career> careerList) {
+        this.careers.clear();
+//        this.careers = careerList;
+        for (Career career : careerList) {
+            career.setMember(this);
+        }
     }
 
 }

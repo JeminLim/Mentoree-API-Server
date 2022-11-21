@@ -1,8 +1,6 @@
 package com.mentoree.domain.entity;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -12,7 +10,8 @@ import static javax.persistence.FetchType.*;
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name = "career_table")
+@ToString(exclude = "member")
+@EqualsAndHashCode
 public class Career extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,22 +23,25 @@ public class Career extends BaseTimeEntity {
     private Member member;
 
     private String companyName;
-    private LocalDate start;
-    private LocalDate end;
+    private LocalDate startDate;
+    private LocalDate endDate;
     private String position;
 
     @Builder
-    public Career(Member member, String companyName, LocalDate start, LocalDate end, String position) {
+    public Career(Member member, String companyName, LocalDate startDate, LocalDate endDate, String position) {
         this.member = member;
         this.companyName = companyName;
-        this.start = start;
-        this.end = end;
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.position = position;
     }
 
-    public void addCareer(Member member) {
+    public void setMember(Member member) {
+        if(this.member != null) {
+            this.member.getCareers().remove(this);
+        }
         this.member = member;
-        member.addCareer(this);
+        member.getCareers().add(this);
     }
 
 }

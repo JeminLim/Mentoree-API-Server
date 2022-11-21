@@ -10,6 +10,7 @@ import static javax.persistence.FetchType.LAZY;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode
+@Table(name = "Applicants")
 public class Applicant extends BaseTimeEntity {
 
     @Id
