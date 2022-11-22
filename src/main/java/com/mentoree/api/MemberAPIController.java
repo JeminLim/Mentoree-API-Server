@@ -55,4 +55,20 @@ public class MemberAPIController {
         return ResponseEntity.ok().body(result);
     }
 
+    @PostMapping("/transform")
+    public ResponseEntity transformToMentor(@RequestBody MemberProfile memberProfile) {
+        memberService.transformMember(memberProfile);
+        Map<String, Object> result = new HashMap<>();
+        result.put("result", "success");
+        return ResponseEntity.ok().body(result);
+    }
+
+    @PostMapping("/withdraw/{id}")
+    public ResponseEntity memberWithdraw(@PathVariable("id") Long memberId) {
+        memberService.withdrawMember(memberId);
+        Map<String, String> result = new HashMap<>();
+        result.put("result", "success");
+        return ResponseEntity.ok().body(result);
+    }
+
 }

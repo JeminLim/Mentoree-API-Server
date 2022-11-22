@@ -40,22 +40,29 @@ public class MemberService {
         return MemberProfile.of(findMember);
     }
 
+    @Transactional
+    public void transformMember(MemberProfile memberProfile) {
+        validationTransform(memberProfile);
+        Member findMember = memberRepository.findById(memberProfile.getId()).orElseThrow(NoDataFoundException::new);
+        updateMemberProfile(memberProfile, findMember);
+        findMember.transformMentor();
+    }
+
+    @Transactional
+    public void withdrawMember(Long memberId) {
+
+        Member findMember = memberRepository.findById(memberId).orElseThrow(NoDataFoundException::new);
+        findMember.requestWithdraw();
+
+    }
+
     private void updateMemberProfile(MemberProfile updateProfile, Member findMember) {
         findMember.updateNickname(updateProfile.getNickname());
-        List<Career> careerList = updateProfile.getCareerList().stream()
-                .map(MemberProfile.History::toCareerEntity)
-                .collect(Collectors.toList());
-        findMember.updateCareer(careerList);
-//        findMember.getCareers().clear();
-//        for (Career career : careerList) {
-//            career.setMember(findMember);
-//        }
-
-        if(!findMember.getUsername().equals(updateProfile.getUsername()))
-            throw new IllegalArgumentException("Username can not change if exist");
-
+        findMember.updateCareer(updateProfile.getHistories());
         findMember.updateUsername(updateProfile.getUsername());
     }
+
+
 
     public boolean duplicateEmailCheck(String email) {
         return emailCheck(email);
@@ -73,6 +80,14 @@ public class MemberService {
         return memberRepository.existsByNickname(nickname);
     }
 
+    private void validationTransform(MemberProfile memberProfile) {
 
+        if(memberProfile.getUsername().isEmpty())
+            throw new IllegalArgumentException("이름은 반드시 포함되어야 합니다.");
+
+        if(memberProfile.getHistories().size() == 0)
+            throw new IllegalArgumentException("반드시 경력이 존재해야 합니다.");
+
+    }
 
 }

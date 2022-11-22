@@ -1,6 +1,7 @@
 package com.mentoree.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mentoree.domain.entity.History;
 import com.mentoree.service.MemberService;
 import com.mentoree.service.dto.MemberProfile;
 import com.mentoree.service.dto.MemberSignUpRequest;
@@ -17,6 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.List;
 
 import static com.mentoree.service.dto.MemberProfile.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -41,11 +43,6 @@ public class MemberAPIControllerTest {
     MockMvc mockMvc;
     @Autowired
     ObjectMapper objectMapper;
-
-    @BeforeEach
-    void setUp() {
-
-    }
 
     @Test
     @DisplayName("이메일 중복 체크")
@@ -140,7 +137,7 @@ public class MemberAPIControllerTest {
                 .username("memberName")
                 .nickname("memberNickname")
                 .email("memberA@email.com")
-                .careerList(Arrays.asList(new History("testCompany",
+                .histories(List.of(new History("testCompany",
                         LocalDate.of(2022, 1, 20),
                         LocalDate.of(2022, 07, 18),
                         "Backend")))
@@ -165,11 +162,11 @@ public class MemberAPIControllerTest {
                                         fieldWithPath("member.email").description("Member email"),
                                         fieldWithPath("member.nickname").description("Member nickname"),
                                         fieldWithPath("member.username").description("Member name").optional(),
-                                        fieldWithPath("member.careerList[]").description("Member career history").optional(),
-                                        fieldWithPath("member.careerList[].companyName").description("company name"),
-                                        fieldWithPath("member.careerList[].start").description("Career start date"),
-                                        fieldWithPath("member.careerList[].end").description("Career end date"),
-                                        fieldWithPath("member.careerList[].position").description("Duty of career")
+                                        fieldWithPath("member.histories[]").description("Member career history").optional(),
+                                        fieldWithPath("member.histories[].companyName").description("company name"),
+                                        fieldWithPath("member.histories[].start").description("Career start date"),
+                                        fieldWithPath("member.histories[].end").description("Career end date"),
+                                        fieldWithPath("member.histories[].position").description("Duty of career")
                                 )
                         )
                 );
@@ -184,7 +181,7 @@ public class MemberAPIControllerTest {
                 .username("memberName")
                 .nickname("newNickname")
                 .email("memberA@email.com")
-                .careerList(Arrays.asList(new History("newCompany",
+                .histories(List.of(new History("newCompany",
                         LocalDate.of(2021, 1, 20),
                         LocalDate.of(2022, 7, 18),
                         "Backend")))
@@ -208,26 +205,93 @@ public class MemberAPIControllerTest {
                                         fieldWithPath("email").description("Member email - unchangeable"),
                                         fieldWithPath("nickname").description("New nickname"),
                                         fieldWithPath("username").description("Member name - one off change").optional(),
-                                        fieldWithPath("careerList[]").description("New member career history").optional(),
-                                        fieldWithPath("careerList[].companyName").description("New company name"),
-                                        fieldWithPath("careerList[].start").description("New career start date"),
-                                        fieldWithPath("careerList[].end").description("New career end date"),
-                                        fieldWithPath("careerList[].position").description("New duty of career")
+                                        fieldWithPath("histories[]").description("New member career history").optional(),
+                                        fieldWithPath("histories[].companyName").description("New company name"),
+                                        fieldWithPath("histories[].start").description("New career start date"),
+                                        fieldWithPath("histories[].end").description("New career end date"),
+                                        fieldWithPath("histories[].position").description("New duty of career")
                                 ), responseFields(
                                         fieldWithPath("member").description("Member information for request"),
                                         fieldWithPath("member.id").description("Member primary key"),
                                         fieldWithPath("member.email").description("Member email"),
                                         fieldWithPath("member.nickname").description("Member nickname"),
                                         fieldWithPath("member.username").description("Member name").optional(),
-                                        fieldWithPath("member.careerList[]").description("Member career history").optional(),
-                                        fieldWithPath("member.careerList[].companyName").description("company name"),
-                                        fieldWithPath("member.careerList[].start").description("Career start date"),
-                                        fieldWithPath("member.careerList[].end").description("Career end date"),
-                                        fieldWithPath("member.careerList[].position").description("Duty of career")
+                                        fieldWithPath("member.histories[]").description("Member career history").optional(),
+                                        fieldWithPath("member.histories[].companyName").description("company name"),
+                                        fieldWithPath("member.histories[].start").description("Career start date"),
+                                        fieldWithPath("member.histories[].end").description("Career end date"),
+                                        fieldWithPath("member.histories[].position").description("Duty of career")
                                 )
                         )
                 );
-
-
     }
+
+    @Test
+    @DisplayName("멘토 회원 전환 요청")
+    void memberTransformTest() throws Exception {
+
+        MemberProfile memberProfile = MemberProfile.builder()
+                .id(1L)
+                .username("memberName")
+                .nickname("newNickname")
+                .email("memberA@email.com")
+                .histories(List.of(new History("newCompany",
+                        LocalDate.of(2021, 1, 20),
+                        LocalDate.of(2022, 7, 18),
+                        "Backend")))
+                .build();
+        String requestBody = objectMapper.writeValueAsString(memberProfile);
+        doNothing().when(memberService).transformMember(any());
+
+        mockMvc.perform(
+                        post("/api/members/transform")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(requestBody))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("result").value("success"))
+                .andDo(
+                        document("post-member-transform",
+                                preprocessRequest(prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                requestFields(
+                                        fieldWithPath("id").description("Member primary key - unchangeable"),
+                                        fieldWithPath("email").description("Member email - unchangeable"),
+                                        fieldWithPath("nickname").description("New nickname"),
+                                        fieldWithPath("username").description("Member name - one off change").optional(),
+                                        fieldWithPath("histories[]").description("New member career history").optional(),
+                                        fieldWithPath("histories[].companyName").description("New company name"),
+                                        fieldWithPath("histories[].start").description("New career start date"),
+                                        fieldWithPath("histories[].end").description("New career end date"),
+                                        fieldWithPath("histories[].position").description("New duty of career")
+                                ), responseFields(
+                                        fieldWithPath("result").description("Result for request")
+                                )
+                        )
+                );
+    }
+
+    @Test
+    @DisplayName("회원 탈퇴 요청")
+    void WithdrawTest() throws Exception {
+
+        doNothing().when(memberService).withdrawMember(any());
+
+        mockMvc.perform(
+                        post("/api/members/withdraw/{id}", 1L))
+                .andExpect(status().isOk())
+                .andDo(
+                        document("post-member-withdraw",
+                                preprocessRequest(prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                pathParameters(
+                                        parameterWithName("id").description("Id for request user to withdraw")
+                                ),
+                                responseFields(
+                                        fieldWithPath("result").description("Result of request")
+                                )
+                        )
+                );
+    }
+
+
 }

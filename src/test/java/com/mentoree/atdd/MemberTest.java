@@ -2,6 +2,7 @@ package com.mentoree.atdd;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mentoree.domain.entity.Career;
+import com.mentoree.domain.entity.History;
 import com.mentoree.domain.entity.Member;
 import com.mentoree.domain.entity.UserRole;
 import com.mentoree.domain.repository.MemberRepository;
@@ -110,7 +111,7 @@ public class MemberTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.jsonPath().getLong("member.id")).isEqualTo(1);
         assertThat(response.jsonPath().getString("member.email")).isEqualTo(EXIST_MEMBER_EMAIL);
-        assertThat(response.jsonPath().getList("member.careerList").size()).isEqualTo(1);
+        assertThat(response.jsonPath().getList("member.histories").size()).isEqualTo(1);
     }
 
     @Test
@@ -122,9 +123,9 @@ public class MemberTest {
                 .email(EXIST_MEMBER_EMAIL)
                 .nickname("newNickname")
                 .username(EXIST_MEMBER_NAME)
-                .careerList(Arrays.asList(
-                        new History("testCompany", LocalDate.of(2021, 1, 1),
-                                LocalDate.of(2022,1,1), "testPosition")))
+                .histories(List.of(
+                        new History("newCompany", LocalDate.of(2021, 1, 1),
+                                LocalDate.of(2022,1,1), "newPosition")))
                 .build();
 
         ExtractableResponse<Response> response = RestAssured.given().log().all().body(updateProfile)
@@ -139,6 +140,47 @@ public class MemberTest {
 
     }
 
+    @Test
+    @DisplayName("멘토 회원으로 전환")
+    void changeToMentorMemberTest() {
+
+        MemberProfile updateProfile = MemberProfile.builder()
+                .id(1L)
+                .email(EXIST_MEMBER_EMAIL)
+                .nickname(EXIST_MEMBER_NICKNAME)
+                .username(EXIST_MEMBER_NAME)
+                .histories(List.of(
+                        new History("testCompany",
+                                LocalDate.of(2021,1,1),
+                                LocalDate.of(2022,1,1),
+                                "testPosition")))
+                .build();
+
+        ExtractableResponse<Response> response = RestAssured.given().log().all().body(updateProfile)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/api/members/transform")
+                .then().log().all()
+                .extract();
+
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    @Test
+    @DisplayName("회원 탈퇴 요청")
+    void MemberDeleteTest() {
+
+        ExtractableResponse<Response> response = RestAssured.given().log().all().pathParam("id", 1L)
+                .when().post("/api/members/withdraw/{id}")
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.jsonPath().getString("result")).isEqualTo("success");
+        assertThat(memberRepository.findById(1L).get().getWithdrawal()).isTrue();
+    }
+
+
     private void initMemberDB() {
         Member memberA = Member.builder()
                 .email(EXIST_MEMBER_EMAIL)
@@ -148,19 +190,16 @@ public class MemberTest {
                 .oAuthId("FORM")
                 .role(UserRole.MENTEE)
                 .build();
-        Member saved = memberRepository.save(memberA);
-        Career careerA = Career.builder()
-                .companyName("testCompany")
-                .startDate(LocalDate.of(2021, 1, 1))
-                .endDate(LocalDate.of(2022, 1, 1))
-                .member(saved)
-                .position("testPosition")
-                .build();
-        List<Career> careerList = new ArrayList<>();
-        careerList.add(careerA);
-        saved.updateCareer(careerList);
-//        careerA.setMember(saved);
-//        careerRepository.save(careerA);
+        Member saved = memberRepository.saveAndFlush(memberA);
+
+        List<History> histories = new ArrayList<>();
+        histories.add(new History("testCompany",
+                LocalDate.of(2021, 1, 1),
+                LocalDate.of(2022, 1, 1),
+                "testPosition"));
+
+        saved.updateCareer(histories);
+        memberRepository.save(saved);
 
     }
 
