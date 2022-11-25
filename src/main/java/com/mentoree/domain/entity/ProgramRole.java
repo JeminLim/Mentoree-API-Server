@@ -9,7 +9,6 @@ public enum ProgramRole {
 
     ProgramRole(String value) { this.value = value;}
 
-    public String getKey() {return name();}
     public String getValue() {return value;}
 
 }

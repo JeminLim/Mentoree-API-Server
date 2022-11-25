@@ -20,6 +20,7 @@ public class Member extends BaseTimeEntity {
 
     //=== 멘티 회원 필수 정보 ===//
     @Enumerated(EnumType.STRING)
+    @Column(name = "member_role")
     private UserRole role;
     private String email;
     private String nickname;

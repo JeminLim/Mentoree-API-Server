@@ -1,17 +1,15 @@
 package com.mentoree.service;
 
 import com.mentoree.domain.entity.*;
-import com.mentoree.domain.repository.CategoryRepository;
-import com.mentoree.domain.repository.MemberRepository;
-import com.mentoree.domain.repository.MentorRepository;
-import com.mentoree.domain.repository.ProgramRepository;
+import com.mentoree.domain.repository.*;
 import com.mentoree.exception.NoDataFoundException;
-import com.mentoree.service.dto.MentorDto;
-import com.mentoree.service.dto.ProgramCreateRequestDto;
-import com.mentoree.service.dto.ProgramInfoDto;
+import com.mentoree.service.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +19,7 @@ public class ProgramService {
     private final ProgramRepository programRepository;
     private final CategoryRepository categoryRepository;
     private final MentorRepository mentorRepository;
+    private final ApplicantRepository applicantRepository;
 
     @Transactional
     public MentorDto createProgram(Long memberId, ProgramCreateRequestDto request) {
@@ -49,6 +48,31 @@ public class ProgramService {
                         updateRequest.getMaxMember(), updateRequest.getPrice(), category, updateRequest.getDueDate());
         // convert to info dto and return
         return ProgramInfoDto.of(findProgram);
+    }
+
+    @Transactional
+    public void applyProgram(Long memberId, ProgramApplyDto applyRequest) {
+        Member loginMember = memberRepository.findById(memberId).orElseThrow(NoDataFoundException::new);
+        Program findProgram = programRepository.findById(applyRequest.getProgramId()).orElseThrow(NoDataFoundException::new);
+        Applicant applicant = applyRequest.toEntity(loginMember, findProgram);
+        applicantRepository.save(applicant);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ApplicantDto> getApplicantList(Long programId) {
+        List<Applicant> applicantList = applicantRepository.findAllByProgramId(programId);
+        return applicantList.stream().map(ApplicantDto::of).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void acceptApplicant(Long applicantId) {
+        Applicant applicant = applicantRepository.findById(applicantId).orElseThrow(NoDataFoundException::new);
+        applicant.approve();
+    }
+
+    @Transactional
+    public void rejectApplicant(Long applicantId) {
+        applicantRepository.deleteById(applicantId);
     }
 
 }

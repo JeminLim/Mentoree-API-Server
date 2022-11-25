@@ -2,6 +2,7 @@ package com.mentoree.domain.entity;
 
 import lombok.Getter;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.time.LocalDate;
 
@@ -11,6 +12,7 @@ public class History {
     private String companyName;
     private LocalDate startDate;
     private LocalDate endDate;
+    @Column(name = "program_position")
     private String position;
 
     public History() {

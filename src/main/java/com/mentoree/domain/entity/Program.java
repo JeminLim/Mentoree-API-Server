@@ -28,6 +28,7 @@ public class Program extends BaseTimeEntity {
 
     private Integer price;
     @Enumerated(EnumType.STRING)
+    @Column(name = "program_state")
     private ProgramState state;
 
     @OneToOne(fetch = LAZY)

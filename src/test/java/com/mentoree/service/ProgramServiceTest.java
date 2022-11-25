@@ -2,10 +2,9 @@ package com.mentoree.service;
 
 
 import com.mentoree.domain.entity.*;
-import com.mentoree.domain.repository.CategoryRepository;
-import com.mentoree.domain.repository.MemberRepository;
-import com.mentoree.domain.repository.MentorRepository;
-import com.mentoree.domain.repository.ProgramRepository;
+import com.mentoree.domain.repository.*;
+import com.mentoree.generator.DummyDataBuilder;
+import com.mentoree.service.dto.ApplicantDto;
 import com.mentoree.service.dto.MentorDto;
 import com.mentoree.service.dto.ProgramCreateRequestDto;
 import com.mentoree.service.dto.ProgramInfoDto;
@@ -18,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
@@ -27,6 +27,8 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class ProgramServiceTest {
 
+    DummyDataBuilder builder = new DummyDataBuilder();
+
     @Mock
     private MemberRepository memberRepository;
     @Mock
@@ -35,6 +37,8 @@ public class ProgramServiceTest {
     private ProgramRepository programRepository;
     @Mock
     private MentorRepository mentorRepository;
+    @Mock
+    private ApplicantRepository applicantRepository;
 
     @InjectMocks
     private ProgramService programService;
@@ -44,10 +48,9 @@ public class ProgramServiceTest {
     void createProgramTest() {
 
         //given
-        Category fDepthCat = genFirstCategory("Programming");
-        Category sDepthCat = genSecondCategory("JAVA", fDepthCat);
-        Member host = genMember("memberA", UserRole.MENTOR);
-        Program program = genProgram("test", sDepthCat);
+        Category category = builder.generateCategory("Programming", "JAVA");
+        Member host = builder.generateMember("memberA", UserRole.MENTOR);
+        Program program = builder.generateProgram("test", category);
         ProgramCreateRequestDto request = ProgramCreateRequestDto.builder()
                 .programName("testProgram")
                 .maxMember(5)
@@ -61,7 +64,7 @@ public class ProgramServiceTest {
 
         when(programRepository.save(any())).thenReturn(program);
         when(memberRepository.findById(anyLong())).thenReturn(Optional.of(host));
-        when(categoryRepository.findByCategoryName(anyString())).thenReturn(Optional.of(sDepthCat));
+        when(categoryRepository.findByCategoryName(anyString())).thenReturn(Optional.of(category));
 
         //when
         MentorDto result = programService.createProgram(1L, request);
@@ -77,9 +80,8 @@ public class ProgramServiceTest {
     @DisplayName("프로그램 업데이트 테스트")
     void updateProgramTest() {
         //given
-        Category fDepthCat = genFirstCategory("Programming");
-        Category sDepthCat = genSecondCategory("JAVA", fDepthCat);
-        Program oldProgram = genProgram("oldProgram", sDepthCat);
+        Category category = builder.generateCategory("Programming", "JAVA");
+        Program oldProgram = builder.generateProgram("oldProgram", category);
         ProgramCreateRequestDto request = ProgramCreateRequestDto.builder()
                 .programName("newProgram")
                 .maxMember(5)
@@ -90,7 +92,7 @@ public class ProgramServiceTest {
                 .build();
 
         when(programRepository.findById(any())).thenReturn(Optional.of(oldProgram));
-        when(categoryRepository.findByCategoryName(anyString())).thenReturn(Optional.of(sDepthCat));
+        when(categoryRepository.findByCategoryName(anyString())).thenReturn(Optional.of(category));
 
         //when
         ProgramInfoDto result = programService.updateProgram(1L, request);
@@ -100,48 +102,21 @@ public class ProgramServiceTest {
         assertThat(result.getDescription()).isEqualTo(request.getDescription());
     }
 
-    private Program genProgram(String dummy, Category category) {
-        return Program.builder()
-                .programName(dummy + "Program")
-                .description(dummy + " program description")
-                .price(10000)
-                .dueDate(LocalDate.now().plusDays(7))
-                .category(category)
-                .maxMember(5)
-                .build();
+    @Test
+    @DisplayName("프로그램 참가 신청자 목록")
+    void getApplicantsList() {
+        Category category = builder.generateCategory("Programming", "JAVA");
+        Member member = builder.generateMember("memberA", UserRole.MENTEE);
+        Program program = builder.generateProgram("test", category);
+        Applicant applicant = builder.generateApplicant(member, program, ProgramRole.MENTEE);
+
+        when(applicantRepository.findAllByProgramId(anyLong())).thenReturn(List.of(applicant));
+
+        List<ApplicantDto> result = programService.getApplicantList(1L);
+
+        assertThat(result.size()).isEqualTo(1);
+        assertThat(result.get(0).getNickname()).isEqualTo(member.getNickname());
+        assertThat(result.get(0).getRole()).isEqualTo(ProgramRole.MENTEE.getValue());
     }
-
-    private Category genFirstCategory(String categoryName) {
-        return Category.builder()
-                .categoryName(categoryName)
-                .build();
-    }
-
-    private Category genSecondCategory(String categoryName, Category parent) {
-        Category cat = Category.builder().categoryName(categoryName).build();
-        cat.setParent(parent);
-        return cat;
-    }
-
-    private Member genMember(String dummy, UserRole role) {
-        return Member.builder()
-                .email(dummy + "@email.com")
-                .nickname(dummy + "nickname")
-                .username(dummy)
-                .oAuthId("FORM")
-                .role(role)
-                .userPassword("1234Qwer!@")
-                .build();
-    }
-
-    private Mentor genMentor(Member member, Program program, boolean host) {
-        return Mentor.builder()
-                .program(program)
-                .member(member)
-                .host(host)
-                .build();
-    }
-
-
 
 }
