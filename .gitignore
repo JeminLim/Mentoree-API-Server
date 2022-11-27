@@ -177,3 +177,5 @@ Temporary Items
 
 build/**
 .gradle/**
+.idea
+*.iml
