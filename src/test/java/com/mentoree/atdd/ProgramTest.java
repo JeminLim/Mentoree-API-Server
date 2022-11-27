@@ -166,4 +166,79 @@ public class ProgramTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
+    @Test
+    @DisplayName("프로그램 상세 정보 조회")
+    void getProgramInfoTest() {
+
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .when()
+                .get("/api/programs/{programId}", 1L)
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.jsonPath().getLong("program.id")).isEqualTo(1L);
+        assertThat(response.jsonPath().getString("program.programName")).isEqualTo("testProgram");
+        assertThat(response.jsonPath().getString("program.description")).isEqualTo("Test program description");
+        assertThat(response.jsonPath().getInt("program.maxMember")).isEqualTo(5);
+        assertThat(response.jsonPath().getInt("program.price")).isEqualTo(10000);
+
+    }
+
+    @Test
+    @DisplayName("프로그램 중도 폐지")
+    void withdrawProgramTest() {
+
+        ExtractableResponse<Response> response = RestAssured.given().log().all().when()
+                .post("/api/programs/withdraw/{programId}", 1L)
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    @Test
+    @DisplayName("프로그램 목록 필터링 - No Filter, First filter, Second filter")
+    void getProgramListWithFilter() {
+        // No Filtering (request all)
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .when().get("/api/programs/list")
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.jsonPath().getList("programList").size()).isEqualTo(8);
+    }
+
+    @Test
+    @DisplayName("프로그램 필터링 - 대분류")
+    void getProgramListWithFirstFilter() {
+        // Select first category
+        ExtractableResponse<Response> responseFirstFilter = RestAssured.given()
+                .queryParam("first", "Programming")
+                .log().all()
+                .when().get("/api/programs/list")
+                .then().log().all()
+                .extract();
+
+        assertThat(responseFirstFilter.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(responseFirstFilter.jsonPath().getList("programList").size()).isEqualTo(8);
+    }
+
+    @Test
+    @DisplayName("프로그램 필터링 - 소분류")
+    void getProgramListWithSecondFilter() {
+        // Select second category
+        ExtractableResponse<Response> responseSecondFilter = RestAssured.given()
+                .queryParam("first", "Programming")
+                .queryParam("second", "JAVA")
+                .log().all()
+                .when().get("/api/programs/list")
+                .then().log().all()
+                .extract();
+
+        assertThat(responseSecondFilter.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(responseSecondFilter.jsonPath().getList("programList").size()).isEqualTo(5);
+    }
+
 }

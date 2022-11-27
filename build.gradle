@@ -1,9 +1,15 @@
+buildscript {
+	ext {
+		queryDslVersion = "5.0.0"
+	}
+}
+
 plugins {
 	id 'java'
 	id 'org.springframework.boot' version '2.7.5'
 	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
 	id "org.asciidoctor.jvm.convert" version "3.3.2"
-//	id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
+	id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 }
 
 group = 'com'
@@ -25,7 +31,10 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-//	implementation 'com.querydsl:querydsl-jpa'
+
+	//QueryDSL
+	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
+	annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}"
 
 	//RestAssured
 	implementation 'io.rest-assured:rest-assured:4.4.0'
@@ -86,18 +95,18 @@ bootJar {
 	}
 }
 
-////querydsl 추가 시작
-//def querydslDir = "$buildDir/generated/querydsl"
-//querydsl {
-//	jpa = true
-//	querydslSourcesDir = querydslDir
-//}
-//sourceSets {
-//	main.java.srcDir querydslDir
-//}
-//configurations {
-//	querydsl.extendsFrom compileClasspath
-//}
-//compileQuerydsl {
-//	options.annotationProcessorPath = configurations.querydsl
-//}
+//querydsl
+def querydslDir = "$buildDir/generated/querydsl"
+querydsl {
+	jpa = true
+	querydslSourcesDir = querydslDir
+}
+sourceSets {
+	main.java.srcDir querydslDir
+}
+configurations {
+	querydsl.extendsFrom compileClasspath
+}
+compileQuerydsl {
+	options.annotationProcessorPath = configurations.querydsl
+}

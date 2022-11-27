@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 @Builder
 public class ProgramInfoDto {
 
+    private Long id;
     private String programName;
     private String description;
     private Integer maxMember;
@@ -26,6 +27,7 @@ public class ProgramInfoDto {
 
     public static ProgramInfoDto of(Program program) {
         return ProgramInfoDto.builder()
+                .id(program.getId())
                 .programName(program.getProgramName())
                 .description(program.getDescription())
                 .price(program.getPrice())

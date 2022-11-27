@@ -37,12 +37,13 @@ public class DummyDataBuilder {
                 .build();
     }
 
-    private Mentor generateMentor(Member member, Program program, boolean host) {
-        return Mentor.builder()
-                .program(program)
+    public Mentor generateMentor(Member member, Program program, boolean host) {
+        Mentor mentor = Mentor.builder()
                 .member(member)
                 .host(host)
                 .build();
+        mentor.setProgram(program);
+        return mentor;
     }
 
     public Mentee generateMentee(Member member, Program program) {

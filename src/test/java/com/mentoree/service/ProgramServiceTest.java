@@ -40,6 +40,9 @@ public class ProgramServiceTest {
     @Mock
     private ApplicantRepository applicantRepository;
 
+    @Mock
+    private MenteeRepository menteeRepository;
+
     @InjectMocks
     private ProgramService programService;
 
@@ -119,4 +122,17 @@ public class ProgramServiceTest {
         assertThat(result.get(0).getRole()).isEqualTo(ProgramRole.MENTEE.getValue());
     }
 
+    @Test
+    @DisplayName("참가자 신청 승인")
+    void acceptApplicant() {
+        Member member = builder.generateMember("memberA", UserRole.MENTEE);
+        Program program = builder.generateProgram("test", builder.generateCategory("Programming", "JAVA"));
+        Applicant applicant = builder.generateApplicant(member, program, ProgramRole.MENTEE);
+
+        when(applicantRepository.findById(anyLong())).thenReturn(Optional.of(applicant));
+
+        programService.acceptApplicant(1L);
+
+        verify(menteeRepository, times(1)).save(any(Mentee.class));
+    }
 }

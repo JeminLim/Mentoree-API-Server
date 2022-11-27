@@ -3,10 +3,12 @@ package com.mentoree.api;
 import com.mentoree.service.ProgramService;
 import com.mentoree.service.dto.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,11 +75,37 @@ public class ProgramApiController {
         programService.acceptApplicant(applicantId);
         return ResponseEntity.ok().build();
     }
+
     @DeleteMapping("/applicants/reject/{applicantId}")
     public ResponseEntity rejectApplicant(@PathVariable("applicantId") Long applicantId) {
         //authority check
         programService.rejectApplicant(applicantId);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{programId}")
+    public ResponseEntity getProgramInfo(@PathVariable("programId") Long programId) {
+        ProgramInfoDto programInfo = programService.getProgramInfo(programId);
+        Map<String, Object> responseBody = new HashMap<>();
+        responseBody.put("program", programInfo);
+        return ResponseEntity.ok().body(responseBody);
+    }
+
+    @PostMapping("/withdraw/{programId}")
+    public ResponseEntity withdrawProgram(@PathVariable("programId") Long programId) {
+        //authority check
+        programService.withdrawProgram(programId);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity getProgramList(@RequestParam(value = "maxId", required = false) Long maxId,
+                                        @RequestParam(value = "minId", required = false) Long minId,
+                                        @RequestParam(value = "first", required = false) String firstCategory,
+                                        @RequestParam(value = "second", required = false) String secondCategory) {
+        List<String> secondCategories = secondCategory == null ? null : List.of(secondCategory.split(","));
+        Map<String, Object> responseBody = programService.getProgramList(minId, maxId, firstCategory, secondCategories);
+        return ResponseEntity.ok().body(responseBody);
     }
 
 }

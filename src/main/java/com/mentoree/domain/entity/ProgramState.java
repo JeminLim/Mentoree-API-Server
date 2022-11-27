@@ -11,6 +11,7 @@ public enum ProgramState {
     HOLD_PAYMENT,
     TUTORING,
     HOLD_TERMINATION,
-    END;
+    END,
+    WITHDRAWAL;
 
 }

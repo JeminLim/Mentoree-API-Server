@@ -68,4 +68,14 @@ public class Program extends BaseTimeEntity {
         this.dueDate = dueDate;
         this.category = category;
     }
+
+    public void incrementMentee() {
+        if(this.mentee.size() == maxMember)
+            this.state = ProgramState.HOLD_PAYMENT;
+    }
+
+    public void withdraw() {
+        this.state = ProgramState.WITHDRAWAL;
+    }
+
 }
