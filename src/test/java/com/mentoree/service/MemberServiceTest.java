@@ -1,11 +1,10 @@
 package com.mentoree.service;
 
-import com.mentoree.domain.entity.Career;
 import com.mentoree.domain.entity.History;
 import com.mentoree.domain.entity.Member;
 import com.mentoree.domain.entity.UserRole;
 import com.mentoree.domain.repository.MemberRepository;
-import com.mentoree.service.dto.MemberProfile;
+import com.mentoree.service.dto.MemberProfileDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,7 +39,7 @@ public class MemberServiceTest {
         //when
         when(memberRepository.findById(any())).thenReturn(Optional.of(memberA));
 
-        MemberProfile findMember = memberService.getProfile(1L);
+        MemberProfileDto findMember = memberService.getProfile(1L);
 
         assertThat(findMember.getEmail()).isEqualTo(memberA.getEmail());
         assertThat(findMember.getNickname()).isEqualTo(memberA.getNickname());
@@ -61,14 +60,14 @@ public class MemberServiceTest {
                 LocalDate.of(2011, 2, 2),
                 LocalDate.of(2022, 1, 1),
                 "newPosition"));
-        MemberProfile updateProfile = MemberProfile.builder()
+        MemberProfileDto updateProfile = MemberProfileDto.builder()
                 .email(memberA.getEmail())
                 .username(memberA.getUsername())
                 .nickname("newNickname")
                 .histories(histories).build();
         //when
         when(memberRepository.findById(any())).thenReturn(Optional.of(memberA));
-        MemberProfile result = memberService.updateProfile(updateProfile);
+        MemberProfileDto result = memberService.updateProfile(updateProfile);
 
         assertThat(result.getEmail()).isEqualTo(updateProfile.getEmail());
         assertThat(result.getUsername()).isEqualTo(updateProfile.getUsername());
@@ -86,10 +85,10 @@ public class MemberServiceTest {
     void transformMemberTest() {
 
         Member memberA = createMember("memberA");
-        MemberProfile memberProfile = MemberProfile.of(memberA);
+        MemberProfileDto memberProfileDto = MemberProfileDto.of(memberA);
 
         when(memberRepository.findById(any())).thenReturn(Optional.of(memberA));
-        memberService.transformMember(memberProfile);
+        memberService.transformMember(memberProfileDto);
 
         assertThat(memberA.getRole()).isEqualTo(UserRole.MENTOR);
 
@@ -124,8 +123,4 @@ public class MemberServiceTest {
         member.updateCareer(histories);
         return member;
     }
-
-
-
-
 }

@@ -11,10 +11,7 @@
       <configuration>
         <setting name="validation-enabled" value="true" />
         <setting name="provider-name" value="Hibernate" />
-        <datasource-mapping>
-          <factory-entry name="entityManagerFactory" />
-          <factory-entry name="mentoree.test" />
-        </datasource-mapping>
+        <datasource-mapping />
         <naming-strategy-map />
       </configuration>
     </facet>
@@ -26,9 +23,8 @@
     <output-test url="file://$MODULE_DIR$/../../out/test/classes" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../src/test">
-      <sourceFolder url="file://$MODULE_DIR$/../../src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/../../src/test/generated_tests" isTestSource="true" generated="true" />
-      <sourceFolder url="file://$MODULE_DIR$/../../src/test/resources" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/../../src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/../../src/test/resources" type="java-test-resource" />
     </content>
     <orderEntry type="inheritedJdk" />
@@ -37,6 +33,7 @@
     <orderEntry type="library" name="Gradle: org.springframework.boot:spring-boot-starter-data-jpa:2.7.5" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework.boot:spring-boot-starter-validation:2.7.5" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework.boot:spring-boot-starter-web:2.7.5" level="project" />
+    <orderEntry type="library" name="Gradle: com.querydsl:querydsl-jpa:5.0.0" level="project" />
     <orderEntry type="library" name="Gradle: io.rest-assured:rest-assured:4.4.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: org.projectlombok:lombok:1.18.24" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework.restdocs:spring-restdocs-mockmvc:2.0.6.RELEASE" level="project" />
@@ -55,6 +52,7 @@
     <orderEntry type="library" name="Gradle: org.springframework.boot:spring-boot-starter-tomcat:2.7.5" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework:spring-webmvc:5.3.23" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework:spring-web:5.3.23" level="project" />
+    <orderEntry type="library" name="Gradle: com.querydsl:querydsl-core:5.0.0" level="project" />
     <orderEntry type="library" name="Gradle: io.rest-assured:xml-path:4.5.1" level="project" />
     <orderEntry type="library" name="Gradle: org.codehaus.groovy:groovy-xml:3.0.13" level="project" />
     <orderEntry type="library" name="Gradle: io.rest-assured:json-path:4.5.1" level="project" />
@@ -106,6 +104,7 @@
     <orderEntry type="library" name="Gradle: org.apache.tomcat.embed:tomcat-embed-websocket:9.0.68" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.tomcat.embed:tomcat-embed-core:9.0.68" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework:spring-expression:5.3.23" level="project" />
+    <orderEntry type="library" name="Gradle: com.mysema.commons:mysema-commons-lang:0.2.4" level="project" />
     <orderEntry type="library" name="Gradle: io.rest-assured:rest-assured-common:4.5.1" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.commons:commons-lang3:3.12.0" level="project" />
     <orderEntry type="library" name="Gradle: org.codehaus.groovy:groovy-json:3.0.13" level="project" />

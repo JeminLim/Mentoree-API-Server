@@ -28,6 +28,7 @@ public class Program extends BaseTimeEntity {
 
     private Integer price;
     @Enumerated(EnumType.STRING)
+    @Column(name = "program_state")
     private ProgramState state;
 
     @OneToOne(fetch = LAZY)
@@ -55,5 +56,24 @@ public class Program extends BaseTimeEntity {
         this.dueDate = dueDate;
         this.category = category;
         this.state = ProgramState.OPEN;
+    }
+    //== 비지니스 로직 ==//
+    public void update(String programName, String description, Integer maxMember,
+                       Integer price, Category category, LocalDate dueDate) {
+        this.programName = programName;
+        this.description = description;
+        this.maxMember = maxMember;
+        this.price = price;
+        this.dueDate = dueDate;
+        this.category = category;
+    }
+
+    public void incrementMentee() {
+        if(this.mentee.size() == maxMember)
+            this.state = ProgramState.HOLD_PAYMENT;
+    }
+
+    public void withdraw() {
+        this.state = ProgramState.WITHDRAWAL;
     }
 }

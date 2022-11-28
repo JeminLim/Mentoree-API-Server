@@ -1,13 +1,12 @@
 package com.mentoree.atdd;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mentoree.domain.entity.Career;
 import com.mentoree.domain.entity.History;
 import com.mentoree.domain.entity.Member;
 import com.mentoree.domain.entity.UserRole;
 import com.mentoree.domain.repository.MemberRepository;
-import com.mentoree.service.dto.MemberProfile;
-import com.mentoree.service.dto.MemberSignUpRequest;
+import com.mentoree.service.dto.MemberProfileDto;
+import com.mentoree.service.dto.MemberSignUpRequestDto;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -25,10 +24,8 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import static com.mentoree.service.dto.MemberProfile.*;
 import static org.assertj.core.api.Assertions.*;
 
 @Slf4j
@@ -61,7 +58,7 @@ public class MemberTest {
     @Test
     void signUpMember() {
         //given
-        final MemberSignUpRequest signUp = MemberSignUpRequest.builder()
+        final MemberSignUpRequestDto signUp = MemberSignUpRequestDto.builder()
                 .email("teset@email.com")
                 .password("QWer1234!@")
                 .nickname("tester")
@@ -83,7 +80,7 @@ public class MemberTest {
     @DisplayName("이메일_중복_요청_예외_발생")
     void signUpMember_DuplicateEmail() {
         //given
-        final MemberSignUpRequest signUp = MemberSignUpRequest.builder()
+        final MemberSignUpRequestDto signUp = MemberSignUpRequestDto.builder()
                 .email(EXIST_MEMBER_EMAIL)
                 .nickname("newNickname")
                 .password("QWer1234!@")
@@ -118,7 +115,7 @@ public class MemberTest {
     @DisplayName("회원 정보 수정")
     void updateProfileTest() {
 
-        MemberProfile updateProfile = MemberProfile.builder()
+        MemberProfileDto updateProfile = MemberProfileDto.builder()
                 .id(1L)
                 .email(EXIST_MEMBER_EMAIL)
                 .nickname("newNickname")
@@ -144,7 +141,7 @@ public class MemberTest {
     @DisplayName("멘토 회원으로 전환")
     void changeToMentorMemberTest() {
 
-        MemberProfile updateProfile = MemberProfile.builder()
+        MemberProfileDto updateProfile = MemberProfileDto.builder()
                 .id(1L)
                 .email(EXIST_MEMBER_EMAIL)
                 .nickname(EXIST_MEMBER_NICKNAME)

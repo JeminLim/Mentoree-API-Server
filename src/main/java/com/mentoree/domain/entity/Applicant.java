@@ -27,6 +27,7 @@ public class Applicant extends BaseTimeEntity {
     private Program program;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "program_role")
     private ProgramRole role;
 
     private String message;
@@ -39,5 +40,9 @@ public class Applicant extends BaseTimeEntity {
         this.role = role;
         this.message = message;
         this.approval = false;
+    }
+    //== 비지니스 로직 ==//
+    public void approve() {
+        this.approval = true;
     }
 }

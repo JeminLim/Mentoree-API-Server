@@ -2,10 +2,4 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mentoree.iml" filepath="$PROJECT_DIR$/.idea/modules/mentoree.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mentoree.main.iml" filepath="$PROJECT_DIR$/.idea/modules/mentoree.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mentoree.querydsl.iml" filepath="$PROJECT_DIR$/.idea/modules/mentoree.querydsl.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mentoree.test.iml" filepath="$PROJECT_DIR$/.idea/modules/mentoree.test.iml" />
-    </modules>
-  </component>
-</project>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/com.mentoree.querydsl.iml" filepath="$PROJECT_DIR$/.idea/modules/com.mentoree.querydsl.iml" />
