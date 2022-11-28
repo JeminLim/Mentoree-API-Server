@@ -33,12 +33,10 @@ public class Category extends BaseTimeEntity {
     public Category(String categoryName) {
         this.categoryName = categoryName;
     }
-
+    
     public void setParent(Category parent) {
         this.parent = parent;
         parent.getChildren().add(this);
     }
-
-
 
 }

@@ -57,7 +57,6 @@ public class Program extends BaseTimeEntity {
         this.category = category;
         this.state = ProgramState.OPEN;
     }
-
     //== 비지니스 로직 ==//
     public void update(String programName, String description, Integer maxMember,
                        Integer price, Category category, LocalDate dueDate) {
@@ -77,5 +76,4 @@ public class Program extends BaseTimeEntity {
     public void withdraw() {
         this.state = ProgramState.WITHDRAWAL;
     }
-
 }

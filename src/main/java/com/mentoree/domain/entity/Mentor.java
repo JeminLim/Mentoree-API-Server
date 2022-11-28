@@ -37,5 +37,4 @@ public class Mentor extends BaseTimeEntity {
         this.program = program;
         program.getMentor().add(this);
     }
-
 }

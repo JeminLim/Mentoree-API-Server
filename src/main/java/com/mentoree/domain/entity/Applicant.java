@@ -41,10 +41,8 @@ public class Applicant extends BaseTimeEntity {
         this.message = message;
         this.approval = false;
     }
-
     //== 비지니스 로직 ==//
     public void approve() {
         this.approval = true;
     }
-
 }

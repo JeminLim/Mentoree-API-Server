@@ -70,7 +70,7 @@ asciidoctor {
 	sources {
 		include("**/index.adoc", "**/common/*.adoc")
 	}
-
+  
 	baseDirFollowsSourceFile()
 }
 
@@ -101,12 +101,24 @@ querydsl {
 	jpa = true
 	querydslSourcesDir = querydslDir
 }
-sourceSets {
-	main.java.srcDir querydslDir
+
+asciidoctor.doFirst {
+	delete file('src/main/resources/static/docs')
 }
-configurations {
-	querydsl.extendsFrom compileClasspath
+
+task copyDocument(type: Copy) {
+	dependsOn asciidoctor
+	from file("build/docs/asciidoc")
+	into file("src/main/resources/static/docs")
 }
-compileQuerydsl {
-	options.annotationProcessorPath = configurations.querydsl
+
+build {
+	dependsOn copyDocument
+}
+
+bootJar {
+	dependsOn asciidoctor
+	from("{asciidoctor.outputDir}/html5") {
+		into 'static/docs'
+	}
 }

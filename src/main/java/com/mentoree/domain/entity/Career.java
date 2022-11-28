@@ -11,7 +11,6 @@ import static javax.persistence.FetchType.*;
 @NoArgsConstructor
 @Entity
 public class Career {
-
     @Id @GeneratedValue
     @Column(name = "career_id")
     private Long id;

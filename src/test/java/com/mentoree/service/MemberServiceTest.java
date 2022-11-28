@@ -123,8 +123,4 @@ public class MemberServiceTest {
         member.updateCareer(histories);
         return member;
     }
-
-
-
-
 }

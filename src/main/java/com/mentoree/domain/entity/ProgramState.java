@@ -13,5 +13,4 @@ public enum ProgramState {
     HOLD_TERMINATION,
     END,
     WITHDRAWAL;
-
 }

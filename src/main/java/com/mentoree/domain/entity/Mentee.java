@@ -32,7 +32,6 @@ public class Mentee extends BaseTimeEntity {
         this.program = program;
         this.payment = false;
     }
-
     public void acceptProgram(Program program) {
         this.program = program;
         program.getMentee().add(this);
