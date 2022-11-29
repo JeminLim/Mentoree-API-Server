@@ -32,8 +32,8 @@ public class ProgramApiController {
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
-    @PostMapping("/update/{id}")
-    public ResponseEntity updateProgram(@PathVariable("id") Long programId,
+    @PostMapping("/update/{programId}")
+    public ResponseEntity updateProgram(@PathVariable("programId") Long programId,
                                         @RequestBody ProgramCreateRequestDto updateRequest) {
 
         //Authority check needed
