@@ -20,8 +20,13 @@ public class Writing {
         this.content = content;
     }
 
-    public void secureConvert(String content) {
-        // Secure coding logic
+    public void updateWriting(Writing updateWriting) {
+        secureConvert(updateWriting.getContent());
+        this.title = updateWriting.getTitle();
+        this.content = updateWriting.getContent();
+    }
 
+    private void secureConvert(String content) {
+        // Secure coding logic
     }
 }

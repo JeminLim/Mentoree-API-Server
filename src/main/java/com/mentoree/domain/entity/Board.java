@@ -38,4 +38,7 @@ public class Board extends BaseTimeEntity {
         this.writing = writing;
     }
 
+    public void update(Writing updateWriting) {
+        this.writing.updateWriting(updateWriting);
+    }
 }

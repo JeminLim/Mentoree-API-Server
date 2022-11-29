@@ -42,4 +42,9 @@ public class Mission extends BaseTimeEntity {
         this.writer = writer;
         this.writing = writing;
     }
+
+    public void update(Writing updateWriting, LocalDate updateDueDate) {
+        this.writing.updateWriting(updateWriting);
+        this.dueDate = updateDueDate;
+    }
 }

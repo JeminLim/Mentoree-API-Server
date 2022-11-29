@@ -141,7 +141,7 @@ public class ProgramApiControllerTest {
 
         //when
         mockMvc.perform(
-                        post("/api/programs/update/{id}", 1L)
+                        post("/api/programs/update/{programId}", 1L)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(requestBody))
                 .andExpect(status().isOk())
@@ -151,6 +151,9 @@ public class ProgramApiControllerTest {
                         document("post-program-update",
                                 preprocessRequest(prettyPrint()),
                                 preprocessResponse(prettyPrint()),
+                                pathParameters(
+                                        parameterWithName("programId").description("program id for update")
+                                ),
                                 requestFields(
                                         fieldWithPath("programName").description("Program name to update"),
                                         fieldWithPath("description").description("Program curriculum to update"),
