@@ -25,15 +25,18 @@ public class Reply extends BaseTimeEntity {
     private Member writer;
 
     private String content;
+    private Boolean removal;
 
     @Builder
     public Reply(Board board, Member writer, String content) {
         this.board = board;
         this.writer = writer;
         this.content = content;
+        this.removal = false;
     }
 
     //==변경로직==//
     public void updateContent(String content) { this.content = content;}
-
+    public boolean isModified() { return this.getCreatedDate() != this.getModifiedDate();}
+    public void remove() {this.removal = true;}
 }
