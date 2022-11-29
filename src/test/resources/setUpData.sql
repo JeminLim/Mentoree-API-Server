@@ -121,3 +121,6 @@ values (now(), now(), '2022-12-05', 'testMission2 description', 'testMission2', 
 
 insert into board(created_date, modified_date, content, title, mission_id, member_id)
 values (now(), now(), 'test board description', 'testBoard', 1, 1);
+
+insert into reply(created_date, modified_date, content, board_id, member_id, removal)
+values (now(), now(), 'test reply', 1, 1, 0);

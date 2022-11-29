@@ -119,6 +119,7 @@ create table reply (
     content varchar(255),
     board_id bigint,
     member_id bigint,
+    removal bit,
     primary key (reply_id)
 );
 
