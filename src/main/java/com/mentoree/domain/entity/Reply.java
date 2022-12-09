@@ -38,5 +38,8 @@ public class Reply extends BaseTimeEntity {
     //==변경로직==//
     public void updateContent(String content) { this.content = content;}
     public boolean isModified() { return this.getCreatedDate() != this.getModifiedDate();}
+    public void deleteBoard() {
+        this.board = null;
+    }
     public void remove() {this.removal = true;}
 }

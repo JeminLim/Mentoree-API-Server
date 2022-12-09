@@ -1,6 +1,10 @@
 server:
   port: 8080
 spring:
+  redis:
+    host: localhost
+    port: 6379
+
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:testdb;MODE=MYSQL
@@ -20,3 +24,27 @@ spring:
   h2:
     console:
       enabled: true
+
+  jwt:
+    secret-key: ENC(VD1w+3bhS2694KWKCfODQEMsUGvnwy5X) # 이후 암호화 필요
+    accessToken:
+      validation: 43200
+    refreshToken:
+      validation: 1209600
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: client-id #google client id
+            client-secret: client-secret  #암호화 필요
+            scope:
+              - profile
+              - email
+encrypt:
+  key: ENC(PCW7tfjXJzXKSTPdLMmp9IpOiZWbIyyE8z4DkbyCbSWwzkreaHkKYyz3bdXAP0K1) # 이후 암호화 필요
+
+jasypt:
+  encryptor:
+    password: M16aXng55CXtjPm9n2pNpGjAa

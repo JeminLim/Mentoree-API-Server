@@ -9,11 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-
 @Slf4j
 @RestControllerAdvice
 public class ControllerAdvice {
-
     @ExceptionHandler(DuplicateDataException.class)
     protected ResponseEntity<ErrorResponse> handleDuplicateExistException(DuplicateDataException e) {
         log.error("[DuplicateExistException] Duplicate occur : {}", e.getEntityClass().getSimpleName());
@@ -21,7 +19,4 @@ public class ControllerAdvice {
         final ErrorResponse response = ErrorResponse.of(ErrorCode.ILLEGAL_PARAMS, e.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
-
-
-
 }

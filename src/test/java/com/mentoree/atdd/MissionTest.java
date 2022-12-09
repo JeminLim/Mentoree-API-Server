@@ -1,5 +1,6 @@
 package com.mentoree.atdd;
 
+import com.mentoree.config.utils.JwtUtils;
 import com.mentoree.service.dto.MissionCreateRequestDto;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -8,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
@@ -30,9 +32,13 @@ public class MissionTest {
     @LocalServerPort
     int port;
 
+    @Autowired
+    private JwtUtils jwtUtils;
+    private String accessToken;
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
+        accessToken = "Bearer " + jwtUtils.generateToken(1L, "memberA@email.com", "ROLE_MENTOR");
     }
 
     @Test
@@ -41,6 +47,7 @@ public class MissionTest {
 
         // given
         MissionCreateRequestDto createRequest = MissionCreateRequestDto.builder()
+                .programId(1L)
                 .title("missionTest")
                 .description("description")
                 .dueDate(LocalDate.now().plusDays(5))
@@ -48,6 +55,7 @@ public class MissionTest {
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .header("Authorization", accessToken)
                 .body(createRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
@@ -72,6 +80,7 @@ public class MissionTest {
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .header("Authorization", accessToken)
                 .body(createRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
@@ -88,6 +97,7 @@ public class MissionTest {
     void deleteMissionTest() {
         //이미 작성된 게시글이 있는 경우에 대한 대비
         ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .header("Authorization", accessToken)
                 .when()
                 .delete("/api/missions/{missionId}", 2L)
                 .then().log().all()
@@ -101,6 +111,7 @@ public class MissionTest {
     void deleteMissionTest_Failed() {
         //이미 작성된 게시글이 있는 경우에 대한 대비
         ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .header("Authorization", accessToken)
                 .when()
                 .delete("/api/missions/{missionId}", 1L)
                 .then().log().all()
@@ -114,6 +125,7 @@ public class MissionTest {
     void getMissionDtoTest() {
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .header("Authorization", accessToken)
                 .when()
                 .get("/api/missions/{missionId}", 1L)
                 .then().log().all()
@@ -134,6 +146,7 @@ public class MissionTest {
     void getMissionInfoListTest() {
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .header("Authorization", accessToken)
                 .when()
                 .get("/api/missions/list/{programId}", 1L)
                 .then().log().all()

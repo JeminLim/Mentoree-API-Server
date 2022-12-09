@@ -1,5 +1,6 @@
 package com.mentoree.atdd;
 
+import com.mentoree.config.utils.JwtUtils;
 import com.mentoree.service.dto.ReplyCreateRequestDto;
 import com.mentoree.service.dto.ReplyInfoDto;
 import io.restassured.RestAssured;
@@ -10,6 +11,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
@@ -33,9 +35,13 @@ public class ReplyTest {
     @LocalServerPort
     int port;
 
+    @Autowired
+    JwtUtils jwtUtils;
+    private String accessToken;
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
+        accessToken = "Bearer " + jwtUtils.generateToken(1L, "memberA@email.com", "ROLE_MENTOR");
     }
 
     @Test
@@ -48,6 +54,7 @@ public class ReplyTest {
                 .build();
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .header("Authorization", accessToken)
                 .body(createRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
@@ -69,6 +76,7 @@ public class ReplyTest {
         updateContent.put("content", "renewed content");
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .header("Authorization", accessToken)
                 .body(updateContent)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
@@ -86,6 +94,7 @@ public class ReplyTest {
     void replyDeleteTest() {
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .header("Authorization", accessToken)
                 .when()
                 .post("/api/replies/remove/{replyId}", 1L)
                 .then().log().all()
@@ -99,6 +108,7 @@ public class ReplyTest {
     void getReplyListTest() {
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .header("Authorization", accessToken)
                 .when()
                 .get("/api/replies/list/{boardId}", 1L)
                 .then().log().all()

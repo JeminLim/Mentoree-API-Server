@@ -1,6 +1,9 @@
 package com.mentoree.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mentoree.api.mock.WithMockCustomUser;
+import com.mentoree.config.WebConfig;
+import com.mentoree.config.interceptors.AuthorityInterceptor;
 import com.mentoree.domain.entity.*;
 import com.mentoree.generator.DummyDataBuilder;
 import com.mentoree.service.ProgramService;
@@ -12,6 +15,8 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
@@ -35,9 +40,11 @@ import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = ProgramApiController.class)
+@WebMvcTest(controllers = ProgramApiController.class, excludeFilters = {
+        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {WebConfig.class, AuthorityInterceptor.class})
+})
 @AutoConfigureRestDocs
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 public class ProgramApiControllerTest {
 
     @Autowired
@@ -52,6 +59,7 @@ public class ProgramApiControllerTest {
 
     @Test
     @DisplayName("프로그램 생성 요청")
+    @WithMockCustomUser
     void ProgramCreateTest() throws Exception {
 
         ProgramCreateRequestDto createRequest = ProgramCreateRequestDto.builder()
@@ -180,6 +188,7 @@ public class ProgramApiControllerTest {
 
     @Test
     @DisplayName("프로그램 참가 신청")
+    @WithMockCustomUser(id = 2L, email = "memberB@email.com", role = "ROLE_MENTEE")
     void applyProgramTest() throws Exception {
 
         ProgramApplyDto applyRequest = ProgramApplyDto.builder()
@@ -272,13 +281,14 @@ public class ProgramApiControllerTest {
         doNothing().when(programService).acceptApplicant(anyLong());
 
         mockMvc.perform(
-                        post("/api/programs/applicants/accept/{applicantId}", 1L))
+                        post("/api/programs/{programId}/applicants/accept/{applicantId}", 1L, 1L))
                 .andExpect(status().isOk())
                 .andDo(
                         document("post-program-applicant-accept",
                                 preprocessRequest(prettyPrint()),
                                 preprocessResponse(prettyPrint()),
                                 pathParameters(
+                                        parameterWithName("programId").description("program pk"),
                                         parameterWithName("applicantId").description("applicant pk for accept request")
                                 )
                         )
@@ -292,13 +302,14 @@ public class ProgramApiControllerTest {
         doNothing().when(programService).rejectApplicant(anyLong());
 
         mockMvc.perform(
-                        delete("/api/programs/applicants/reject/{applicantId}", 1L))
+                        delete("/api/programs/{programId}/applicants/reject/{applicantId}", 1L, 1L))
                 .andExpect(status().isOk())
                 .andDo(
                         document("delete-program-applicant-reject",
                                 preprocessRequest(prettyPrint()),
                                 preprocessResponse(prettyPrint()),
                                 pathParameters(
+                                        parameterWithName("programId").description("program pk"),
                                         parameterWithName("applicantId").description("applicant pk for reject request")
                                 )
                         )

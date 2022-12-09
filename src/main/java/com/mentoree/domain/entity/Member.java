@@ -7,6 +7,7 @@ import org.springframework.util.StringUtils;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -30,8 +31,7 @@ public class Member extends BaseTimeEntity {
     //=== 멘토 회원 필수 정보 ===//
     private String username;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "member_id")
+    @OneToMany(orphanRemoval = true, mappedBy = "member")
     private List<Career> careers = new ArrayList<>();
 
     //== 탈퇴 요청 여부 ==//
@@ -63,11 +63,8 @@ public class Member extends BaseTimeEntity {
         this.username = username;
     }
 
-    public void updateCareer(List<History> histories) {
-        this.careers.clear();
-        for (History history : histories) {
-            this.careers.add(new Career(history));
-        }
+    public void updateCareer(Career career) {
+        this.careers.add(career);
     }
 
     public void transformMentor() {

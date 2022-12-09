@@ -1,12 +1,10 @@
 package com.mentoree.service;
 
-import com.mentoree.domain.entity.Board;
-import com.mentoree.domain.entity.Member;
-import com.mentoree.domain.entity.Mission;
-import com.mentoree.domain.entity.Writing;
+import com.mentoree.domain.entity.*;
 import com.mentoree.domain.repository.BoardRepository;
 import com.mentoree.domain.repository.MemberRepository;
 import com.mentoree.domain.repository.MissionRepository;
+import com.mentoree.domain.repository.ReplyRepository;
 import com.mentoree.exception.NoDataFoundException;
 import com.mentoree.service.dto.BoardCreateRequestDto;
 import com.mentoree.service.dto.BoardInfoDto;
@@ -24,6 +22,7 @@ public class BoardService {
     private final MemberRepository memberRepository;
     private final MissionRepository missionRepository;
     private final BoardRepository boardRepository;
+    private final ReplyRepository replyRepository;
 
     @Transactional
     public void create(Long memberId, BoardCreateRequestDto request) {
@@ -43,6 +42,10 @@ public class BoardService {
 
     @Transactional
     public void delete(Long boardId) {
+        List<Reply> replyList = replyRepository.findAllByBoardId(boardId);
+        for (Reply reply : replyList) {
+            reply.deleteBoard();
+        }
         boardRepository.deleteById(boardId);
     }
 

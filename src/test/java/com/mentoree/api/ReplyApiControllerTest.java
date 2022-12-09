@@ -1,6 +1,8 @@
 package com.mentoree.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mentoree.config.WebConfig;
+import com.mentoree.config.interceptors.AuthorityInterceptor;
 import com.mentoree.generator.DummyDataBuilder;
 import com.mentoree.service.ReplyService;
 import com.mentoree.service.dto.ReplyCreateRequestDto;
@@ -12,6 +14,8 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -35,9 +39,11 @@ import static org.springframework.restdocs.request.RequestDocumentation.pathPara
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = ReplyApiController.class)
+@WebMvcTest(controllers = ReplyApiController.class, excludeFilters = {
+        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {WebConfig.class, AuthorityInterceptor.class})
+})
 @AutoConfigureRestDocs
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 public class ReplyApiControllerTest {
 
     @Autowired

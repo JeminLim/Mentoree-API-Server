@@ -15,7 +15,7 @@ public enum ErrorCode {
     INVALID_TOKEN(401, "U002", " Invalid token was used"),
     NO_AUTHORITY(401, "U003", " non-authority user access"),
     EXPIRED_TOKEN(401, "U004", " Expired token was used"),
-
+    ACCESS_DENIED(401, "U000", "Access denied"),
     ILLEGAL_PARAMS(400, "D001", " Illegal argument binding"),
     ILLEGAL_STATEMENT(400, "D002", " Entity cannot perform method due to statement"),
     ;
