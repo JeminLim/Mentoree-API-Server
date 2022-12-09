@@ -38,8 +38,20 @@
     <orderEntry type="library" name="Gradle: org.springframework.boot:spring-boot-starter-web:2.7.5" level="project" />
     <orderEntry type="library" name="Gradle: com.querydsl:querydsl-jpa:5.0.0" level="project" />
     <orderEntry type="library" name="Gradle: io.rest-assured:rest-assured:4.4.0" level="project" />
+    <orderEntry type="library" name="Gradle: org.springframework.boot:spring-boot-starter-security:2.7.5" level="project" />
+    <orderEntry type="library" name="Gradle: com.auth0:java-jwt:3.19.2" level="project" />
+    <orderEntry type="library" name="Gradle: org.springframework.boot:spring-boot-starter-oauth2-client:2.7.5" level="project" />
+    <orderEntry type="library" name="Gradle: org.springframework.boot:spring-boot-starter-data-redis:2.7.5" level="project" />
+    <orderEntry type="library" name="Gradle: it.ozimov:embedded-redis:0.7.2" level="project" />
+    <orderEntry type="library" name="Gradle: com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.4" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.commons:commons-text:1.8" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.commons:commons-lang3:3.12.0" level="project" />
+    <orderEntry type="library" name="Gradle: commons-io:commons-io:2.11.0" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.httpcomponents:httpclient:4.5.13" level="project" />
+    <orderEntry type="library" name="Gradle: com.googlecode.json-simple:json-simple:1.1.1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: org.projectlombok:lombok:1.18.24" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework.restdocs:spring-restdocs-mockmvc:2.0.6.RELEASE" level="project" />
+    <orderEntry type="library" name="Gradle: org.springframework.security:spring-security-test:5.7.4" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework.boot:spring-boot-starter-test:2.7.5" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework.boot:spring-boot-starter-aop:2.7.5" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework.boot:spring-boot-starter-jdbc:2.7.5" level="project" />
@@ -57,15 +69,28 @@
     <orderEntry type="library" name="Gradle: org.springframework:spring-web:5.3.23" level="project" />
     <orderEntry type="library" name="Gradle: com.querydsl:querydsl-core:5.0.0" level="project" />
     <orderEntry type="library" name="Gradle: io.rest-assured:xml-path:4.5.1" level="project" />
-    <orderEntry type="library" name="Gradle: org.codehaus.groovy:groovy-xml:3.0.13" level="project" />
     <orderEntry type="library" name="Gradle: io.rest-assured:json-path:4.5.1" level="project" />
-    <orderEntry type="library" name="Gradle: org.codehaus.groovy:groovy:3.0.13" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.httpcomponents:httpmime:4.5.13" level="project" />
-    <orderEntry type="library" name="Gradle: org.apache.httpcomponents:httpclient:4.5.13" level="project" />
+    <orderEntry type="library" name="Gradle: org.codehaus.groovy:groovy-xml:3.0.13" level="project" />
+    <orderEntry type="library" name="Gradle: org.codehaus.groovy:groovy:3.0.13" level="project" />
     <orderEntry type="library" name="Gradle: org.hamcrest:hamcrest:2.2" level="project" />
     <orderEntry type="library" name="Gradle: org.ccil.cowan.tagsoup:tagsoup:1.2.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.springframework.security:spring-security-web:5.7.4" level="project" />
+    <orderEntry type="library" name="Gradle: org.springframework.security:spring-security-config:5.7.4" level="project" />
+    <orderEntry type="library" name="Gradle: org.springframework:spring-aop:5.3.23" level="project" />
+    <orderEntry type="library" name="Gradle: org.springframework.security:spring-security-oauth2-client:5.7.4" level="project" />
+    <orderEntry type="library" name="Gradle: org.springframework.security:spring-security-oauth2-jose:5.7.4" level="project" />
+    <orderEntry type="library" name="Gradle: org.springframework.security:spring-security-core:5.7.4" level="project" />
+    <orderEntry type="library" name="Gradle: org.springframework.data:spring-data-redis:2.7.5" level="project" />
+    <orderEntry type="library" name="Gradle: io.lettuce:lettuce-core:6.1.10.RELEASE" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.guava:guava:21.0" level="project" />
+    <orderEntry type="library" name="Gradle: com.github.ulisesbocchio:jasypt-spring-boot:3.0.4" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.httpcomponents:httpcore:4.4.15" level="project" />
+    <orderEntry type="library" name="Gradle: commons-codec:commons-codec:1.15" level="project" />
+    <orderEntry type="library" name="Gradle: junit:junit:4.13.2" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework.restdocs:spring-restdocs-core:2.0.6.RELEASE" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework:spring-test:5.3.23" level="project" />
+    <orderEntry type="library" name="Gradle: org.springframework:spring-core:5.3.23" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework.boot:spring-boot-test-autoconfigure:2.7.5" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework.boot:spring-boot-test:2.7.5" level="project" />
     <orderEntry type="library" name="Gradle: com.jayway.jsonpath:json-path:2.7.0" level="project" />
@@ -75,9 +100,7 @@
     <orderEntry type="library" name="Gradle: org.mockito:mockito-junit-jupiter:4.5.1" level="project" />
     <orderEntry type="library" name="Gradle: org.mockito:mockito-core:4.5.1" level="project" />
     <orderEntry type="library" name="Gradle: org.skyscreamer:jsonassert:1.5.1" level="project" />
-    <orderEntry type="library" name="Gradle: org.springframework:spring-core:5.3.23" level="project" />
     <orderEntry type="library" name="Gradle: org.xmlunit:xmlunit-core:2.9.0" level="project" />
-    <orderEntry type="library" name="Gradle: org.springframework:spring-aop:5.3.23" level="project" />
     <orderEntry type="library" name="Gradle: org.aspectj:aspectjweaver:1.9.7" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework:spring-jdbc:5.3.23" level="project" />
     <orderEntry type="library" name="Gradle: com.zaxxer:HikariCP:4.0.3" level="project" />
@@ -88,10 +111,10 @@
     <orderEntry type="library" name="Gradle: antlr:antlr:2.7.7" level="project" />
     <orderEntry type="library" name="Gradle: org.jboss:jandex:2.4.2.Final" level="project" />
     <orderEntry type="library" name="Gradle: com.fasterxml:classmate:1.5.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.springframework:spring-context:5.3.23" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework:spring-orm:5.3.23" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework.data:spring-data-commons:2.7.5" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework:spring-tx:5.3.23" level="project" />
-    <orderEntry type="library" name="Gradle: org.springframework:spring-context:5.3.23" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework:spring-beans:5.3.23" level="project" />
     <orderEntry type="library" name="Gradle: org.slf4j:slf4j-api:1.7.36" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework.boot:spring-boot-autoconfigure:2.7.5" level="project" />
@@ -109,17 +132,27 @@
     <orderEntry type="library" name="Gradle: org.springframework:spring-expression:5.3.23" level="project" />
     <orderEntry type="library" name="Gradle: com.mysema.commons:mysema-commons-lang:0.2.4" level="project" />
     <orderEntry type="library" name="Gradle: io.rest-assured:rest-assured-common:4.5.1" level="project" />
-    <orderEntry type="library" name="Gradle: org.apache.commons:commons-lang3:3.12.0" level="project" />
     <orderEntry type="library" name="Gradle: org.codehaus.groovy:groovy-json:3.0.13" level="project" />
-    <orderEntry type="library" name="Gradle: org.apache.httpcomponents:httpcore:4.4.15" level="project" />
-    <orderEntry type="library" name="Gradle: commons-codec:commons-codec:1.15" level="project" />
+    <orderEntry type="library" name="Gradle: org.springframework.security:spring-security-oauth2-core:5.7.4" level="project" />
+    <orderEntry type="library" name="Gradle: com.nimbusds:oauth2-oidc-sdk:9.35" level="project" />
+    <orderEntry type="library" name="Gradle: com.nimbusds:nimbus-jose-jwt:9.22" level="project" />
+    <orderEntry type="library" name="Gradle: org.springframework.security:spring-security-crypto:5.7.4" level="project" />
+    <orderEntry type="library" name="Gradle: org.springframework.data:spring-data-keyvalue:2.7.5" level="project" />
+    <orderEntry type="library" name="Gradle: org.springframework:spring-context-support:5.3.23" level="project" />
+    <orderEntry type="library" name="Gradle: org.springframework:spring-oxm:5.3.23" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-handler:4.1.84.Final" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-transport:4.1.84.Final" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-common:4.1.84.Final" level="project" />
+    <orderEntry type="library" name="Gradle: io.projectreactor:reactor-core:3.4.24" level="project" />
+    <orderEntry type="library" name="Gradle: org.jasypt:jasypt:1.9.3" level="project" />
+    <orderEntry type="library" name="Gradle: org.hamcrest:hamcrest-core:2.2" level="project" />
+    <orderEntry type="library" name="Gradle: org.springframework:spring-jcl:5.3.23" level="project" />
     <orderEntry type="library" name="Gradle: net.minidev:json-smart:2.4.8" level="project" />
     <orderEntry type="library" name="Gradle: jakarta.activation:jakarta.activation-api:1.2.2" level="project" />
     <orderEntry type="library" name="Gradle: org.junit.jupiter:junit-jupiter-params:5.8.2" level="project" />
     <orderEntry type="library" name="Gradle: org.junit.jupiter:junit-jupiter-api:5.8.2" level="project" />
     <orderEntry type="library" name="Gradle: net.bytebuddy:byte-buddy-agent:1.12.18" level="project" />
     <orderEntry type="library" name="Gradle: com.vaadin.external.google:android-json:0.0.20131108.vaadin1" level="project" />
-    <orderEntry type="library" name="Gradle: org.springframework:spring-jcl:5.3.23" level="project" />
     <orderEntry type="library" name="Gradle: org.glassfish.jaxb:txw2:2.3.7" level="project" />
     <orderEntry type="library" name="Gradle: com.sun.istack:istack-commons-runtime:3.0.12" level="project" />
     <orderEntry type="library" name="Gradle: ch.qos.logback:logback-classic:1.2.11" level="project" />
@@ -127,6 +160,14 @@
     <orderEntry type="library" name="Gradle: org.slf4j:jul-to-slf4j:1.7.36" level="project" />
     <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.13.4" level="project" />
     <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-core:2.13.4" level="project" />
+    <orderEntry type="library" name="Gradle: com.github.stephenc.jcip:jcip-annotations:1.0-1" level="project" />
+    <orderEntry type="library" name="Gradle: com.nimbusds:content-type:2.2" level="project" />
+    <orderEntry type="library" name="Gradle: com.nimbusds:lang-tag:1.6" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-transport-native-unix-common:4.1.84.Final" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-codec:4.1.84.Final" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-resolver:4.1.84.Final" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-buffer:4.1.84.Final" level="project" />
+    <orderEntry type="library" name="Gradle: org.reactivestreams:reactive-streams:1.0.4" level="project" />
     <orderEntry type="library" name="Gradle: net.minidev:accessors-smart:2.4.8" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: org.apiguardian:apiguardian-api:1.1.2" level="project" />
     <orderEntry type="library" name="Gradle: org.junit.platform:junit-platform-commons:1.8.2" level="project" />

@@ -1,8 +1,10 @@
 package com.mentoree.service;
 
+import com.mentoree.domain.entity.Career;
 import com.mentoree.domain.entity.History;
 import com.mentoree.domain.entity.Member;
 import com.mentoree.domain.entity.UserRole;
+import com.mentoree.domain.repository.CareerRepository;
 import com.mentoree.domain.repository.MemberRepository;
 import com.mentoree.service.dto.MemberProfileDto;
 import org.junit.jupiter.api.DisplayName;
@@ -16,6 +18,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -26,6 +29,8 @@ public class MemberServiceTest {
 
     @Mock
     private MemberRepository memberRepository;
+    @Mock
+    private CareerRepository careerRepository;
 
     @InjectMocks
     private MemberService memberService;
@@ -120,7 +125,6 @@ public class MemberServiceTest {
                 LocalDate.of(2011,1,1),
                 LocalDate.of(2022,1,1),
                 "oldPosition"));
-        member.updateCareer(histories);
         return member;
     }
 }

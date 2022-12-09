@@ -1,6 +1,7 @@
 package com.mentoree.atdd;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mentoree.config.utils.JwtUtils;
 import com.mentoree.domain.entity.History;
 import com.mentoree.domain.entity.Member;
 import com.mentoree.domain.entity.UserRole;
@@ -8,6 +9,7 @@ import com.mentoree.domain.repository.MemberRepository;
 import com.mentoree.service.dto.MemberProfileDto;
 import com.mentoree.service.dto.MemberSignUpRequestDto;
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import lombok.extern.slf4j.Slf4j;
@@ -21,10 +23,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.web.WebAppConfiguration;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -32,9 +39,10 @@ import static org.assertj.core.api.Assertions.*;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
+@Sql({"/init.sql", "/setUpData.sql"})
 public class MemberTest {
 
-    private final String EXIST_MEMBER_EMAIL = "member@email.com";
+    private final String EXIST_MEMBER_EMAIL = "memberA@email.com";
     private final String EXIST_MEMBER_NICKNAME = "memberA";
     private final String EXIST_MEMBER_PASSWORD = "1234QWer!@";
     private final String EXIST_MEMBER_NAME = "memberName";
@@ -45,13 +53,28 @@ public class MemberTest {
     @Autowired
     private MemberRepository memberRepository;
     @Autowired
-    private ObjectMapper objectMapper;
+    private JwtUtils jwtUtils;
+
+    private String accessToken;
 
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
-        memberRepository.deleteAllInBatch();
-        initMemberDB();
+        accessToken = "Bearer " + jwtUtils.generateToken(1L, "memberA@email.com", "ROLE_MENTOR");
+    }
+
+    @Test
+    @DisplayName("로그인 테스트")
+    void loginMember() {
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .param("email", "memberA@email.com")
+                .param("password", "1234QWer!@")
+                .when()
+                .post("/login")
+                .then().log().all()
+                .extract();
+
+        assertThat(response.jsonPath().getString("accessToken")).isNotNull();
     }
 
     @DisplayName("회원가입_요청_정상_동작")
@@ -59,8 +82,8 @@ public class MemberTest {
     void signUpMember() {
         //given
         final MemberSignUpRequestDto signUp = MemberSignUpRequestDto.builder()
-                .email("teset@email.com")
-                .password("QWer1234!@")
+                .email("test@email.com")
+                .password("1234QWer!@")
                 .nickname("tester")
                 .build();
 
@@ -101,6 +124,7 @@ public class MemberTest {
     @DisplayName("회원 정보 열람")
     void getProfileTest() {
         ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .header("Authorization", accessToken)
                 .when().get("/api/members/profiles/{id}", 1L)
                 .then().log().all()
                 .extract();
@@ -114,7 +138,6 @@ public class MemberTest {
     @Test
     @DisplayName("회원 정보 수정")
     void updateProfileTest() {
-
         MemberProfileDto updateProfile = MemberProfileDto.builder()
                 .id(1L)
                 .email(EXIST_MEMBER_EMAIL)
@@ -125,7 +148,9 @@ public class MemberTest {
                                 LocalDate.of(2022,1,1), "newPosition")))
                 .build();
 
-        ExtractableResponse<Response> response = RestAssured.given().log().all().body(updateProfile)
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .header("Authorization", accessToken)
+                .body(updateProfile)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/api/members/profiles")
                 .then().log().all()
@@ -154,6 +179,7 @@ public class MemberTest {
                 .build();
 
         ExtractableResponse<Response> response = RestAssured.given().log().all().body(updateProfile)
+                .header("Authorization", accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/api/members/transform")
                 .then().log().all()
@@ -167,7 +193,9 @@ public class MemberTest {
     @DisplayName("회원 탈퇴 요청")
     void MemberDeleteTest() {
 
-        ExtractableResponse<Response> response = RestAssured.given().log().all().pathParam("id", 1L)
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .header("Authorization", accessToken)
+                .pathParam("id", 1L)
                 .when().post("/api/members/withdraw/{id}")
                 .then().log().all()
                 .extract();
@@ -175,29 +203,6 @@ public class MemberTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.jsonPath().getString("result")).isEqualTo("success");
         assertThat(memberRepository.findById(1L).get().getWithdrawal()).isTrue();
-    }
-
-
-    private void initMemberDB() {
-        Member memberA = Member.builder()
-                .email(EXIST_MEMBER_EMAIL)
-                .nickname(EXIST_MEMBER_NICKNAME)
-                .userPassword(EXIST_MEMBER_PASSWORD)
-                .username(EXIST_MEMBER_NAME)
-                .oAuthId("FORM")
-                .role(UserRole.MENTEE)
-                .build();
-        Member saved = memberRepository.saveAndFlush(memberA);
-
-        List<History> histories = new ArrayList<>();
-        histories.add(new History("testCompany",
-                LocalDate.of(2021, 1, 1),
-                LocalDate.of(2022, 1, 1),
-                "testPosition"));
-
-        saved.updateCareer(histories);
-        memberRepository.save(saved);
-
     }
 
 }

@@ -1,0 +1,45 @@
+server:
+  port: 8080
+
+spring:
+  redis:
+    host: localhost
+    port: 6379
+
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://localhost:3306/mentoree
+    username: mentoreeAdmin
+    password: ENC(IwBn8uQDUIgJ1vkdgD8w9w==) # 암호호 필요
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL57Dialect
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: true
+    open-in-view: false
+    show-sql: true
+
+  jwt:
+    secret-key: ENC(VD1w+3bhS2694KWKCfODQEMsUGvnwy5X) # 이후 암호화 필요
+    accessToken:
+      validation: 43200
+    refreshToken:
+      validation: 1209600
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: client-id #google client id
+            client-secret: client-secret  #암호화 필요
+            scope:
+              - profile
+              - email
+
+encrypt:
+  key: ENC(PCW7tfjXJzXKSTPdLMmp9IpOiZWbIyyE8z4DkbyCbSWwzkreaHkKYyz3bdXAP0K1) # 이후 암호화 필요

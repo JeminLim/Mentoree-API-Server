@@ -1,10 +1,17 @@
 package com.mentoree.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mentoree.config.WebConfig;
+import com.mentoree.config.interceptors.AuthorityInterceptor;
+import com.mentoree.config.security.JwtFilter;
+import com.mentoree.config.security.SecurityConfig;
+import com.mentoree.config.utils.JwtUtils;
+import com.mentoree.config.utils.JwtUtilsImpl;
 import com.mentoree.domain.entity.History;
 import com.mentoree.service.MemberService;
 import com.mentoree.service.dto.MemberProfileDto;
 import com.mentoree.service.dto.MemberSignUpRequestDto;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +19,15 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -28,9 +40,11 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(controllers = MemberApiController.class)
+@WebMvcTest(controllers = MemberApiController.class, excludeFilters = {
+        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {WebConfig.class, AuthorityInterceptor.class})
+})
 @AutoConfigureRestDocs
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 public class MemberApiControllerTest {
 
     @MockBean
@@ -161,8 +175,8 @@ public class MemberApiControllerTest {
                                         fieldWithPath("member.username").description("Member name").optional(),
                                         fieldWithPath("member.histories[]").description("Member career history").optional(),
                                         fieldWithPath("member.histories[].companyName").description("company name"),
-                                        fieldWithPath("member.histories[].start").description("Career start date"),
-                                        fieldWithPath("member.histories[].end").description("Career end date"),
+                                        fieldWithPath("member.histories[].startDate").description("Career start date"),
+                                        fieldWithPath("member.histories[].endDate").description("Career end date"),
                                         fieldWithPath("member.histories[].position").description("Duty of career")
                                 )
                         )
@@ -204,8 +218,8 @@ public class MemberApiControllerTest {
                                         fieldWithPath("username").description("Member name - one off change").optional(),
                                         fieldWithPath("histories[]").description("New member career history").optional(),
                                         fieldWithPath("histories[].companyName").description("New company name"),
-                                        fieldWithPath("histories[].start").description("New career start date"),
-                                        fieldWithPath("histories[].end").description("New career end date"),
+                                        fieldWithPath("histories[].startDate").description("New career start date"),
+                                        fieldWithPath("histories[].endDate").description("New career end date"),
                                         fieldWithPath("histories[].position").description("New duty of career")
                                 ), responseFields(
                                         fieldWithPath("member").description("Member information for request"),
@@ -215,8 +229,8 @@ public class MemberApiControllerTest {
                                         fieldWithPath("member.username").description("Member name").optional(),
                                         fieldWithPath("member.histories[]").description("Member career history").optional(),
                                         fieldWithPath("member.histories[].companyName").description("company name"),
-                                        fieldWithPath("member.histories[].start").description("Career start date"),
-                                        fieldWithPath("member.histories[].end").description("Career end date"),
+                                        fieldWithPath("member.histories[].startDate").description("Career start date"),
+                                        fieldWithPath("member.histories[].endDate").description("Career end date"),
                                         fieldWithPath("member.histories[].position").description("Duty of career")
                                 )
                         )
@@ -257,8 +271,8 @@ public class MemberApiControllerTest {
                                         fieldWithPath("username").description("Member name - one off change").optional(),
                                         fieldWithPath("histories[]").description("New member career history").optional(),
                                         fieldWithPath("histories[].companyName").description("New company name"),
-                                        fieldWithPath("histories[].start").description("New career start date"),
-                                        fieldWithPath("histories[].end").description("New career end date"),
+                                        fieldWithPath("histories[].startDate").description("New career start date"),
+                                        fieldWithPath("histories[].endDate").description("New career end date"),
                                         fieldWithPath("histories[].position").description("New duty of career")
                                 ), responseFields(
                                         fieldWithPath("result").description("Result for request")

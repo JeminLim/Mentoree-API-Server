@@ -175,5 +175,6 @@ Temporary Items
 
 build/**
 .gradle/**
-.idea
+.idea/**
 *.iml
+*.ConfigEncryption.java

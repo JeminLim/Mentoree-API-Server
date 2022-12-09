@@ -1,6 +1,10 @@
 package com.mentoree.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mentoree.api.mock.WithMockCustomUser;
+import com.mentoree.config.WebConfig;
+import com.mentoree.config.interceptors.AuthorityInterceptor;
+import com.mentoree.config.security.AuthenticateUser;
 import com.mentoree.service.BoardService;
 import com.mentoree.service.dto.BoardCreateRequestDto;
 import com.mentoree.service.dto.BoardInfoDto;
@@ -11,9 +15,15 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -29,9 +39,11 @@ import static org.springframework.restdocs.request.RequestDocumentation.pathPara
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = BoardApiController.class)
+@WebMvcTest(controllers = BoardApiController.class, excludeFilters = {
+        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {WebConfig.class, AuthorityInterceptor.class})
+})
 @AutoConfigureRestDocs
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 public class BoardApiControllerTest {
 
     @Autowired
@@ -45,6 +57,7 @@ public class BoardApiControllerTest {
 
     @Test
     @DisplayName("게시글 생성 요청")
+    @WithMockCustomUser
     void BoardCreateTest() throws Exception {
 
         BoardCreateRequestDto createRequest = BoardCreateRequestDto.builder()

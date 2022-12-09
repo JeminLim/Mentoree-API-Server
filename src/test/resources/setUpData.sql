@@ -17,19 +17,22 @@ insert into member (created_date, modified_date,
             email, nickname, o_auth_id, member_role,
             user_password, username, withdrawal)
 values (now(), now(), 'memberA@email.com', 'memberANickname',
-        'FORM', 'MENTOR', '1234QWer!@', 'memberA', false);
+        'FORM', 'MENTOR',  '{bcrypt}$2a$10$PAeTU0ut57vvZsZLJG4RKeSqUUMEuSlhloXXpeRT4avZmoVHTlDcq', 'memberA', false);
+
+insert into career (company_name, end_date, program_position, start_date, member_id)
+values ('testCompany', '2022-10-10', 'Backend', '2021-1-1', 1);
 
 insert into member (created_date, modified_date,
                     email, nickname, o_auth_id, member_role,
                     user_password, username, withdrawal)
 values (now(), now(), 'memberB@email.com', 'memberBNickname',
-        'FORM', 'MENTEE', '1234QWer!@', 'memberB', false);
+        'FORM', 'MENTEE', '{bcrypt}$2a$10$PAeTU0ut57vvZsZLJG4RKeSqUUMEuSlhloXXpeRT4avZmoVHTlDcq', 'memberB', false);
 
 insert into member (created_date, modified_date,
                     email, nickname, o_auth_id, member_role,
                     user_password, username, withdrawal)
 values (now(), now(), 'memberC@email.com', 'memberCNickname',
-        'FORM', 'MENTEE', '1234QWer!@', 'memberC', false);
+        'FORM', 'MENTEE', '{bcrypt}$2a$10$PAeTU0ut57vvZsZLJG4RKeSqUUMEuSlhloXXpeRT4avZmoVHTlDcq', 'memberC', false);
 
 insert into program(created_date, modified_date, description,
         due_date, max_member, price, program_name, program_state,

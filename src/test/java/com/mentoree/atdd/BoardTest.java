@@ -1,5 +1,6 @@
 package com.mentoree.atdd;
 
+import com.mentoree.config.utils.JwtUtils;
 import com.mentoree.service.dto.BoardCreateRequestDto;
 import com.mentoree.service.dto.MissionCreateRequestDto;
 import io.restassured.RestAssured;
@@ -9,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
@@ -28,19 +30,20 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Sql({"/init.sql", "/setUpData.sql"})
 public class BoardTest {
 
-
     @LocalServerPort
     int port;
-
+    @Autowired
+    JwtUtils jwtUtils;
+    private String accessToken;
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
+        accessToken = "Bearer " + jwtUtils.generateToken(1L, "memberA@email.com", "ROLE_MENTOR");
     }
 
     @Test
     @DisplayName("게시글 생성 요청")
     void createBoardTest() {
-
         // given
         BoardCreateRequestDto createRequest = BoardCreateRequestDto.builder()
                 .missionId(1L)
@@ -50,6 +53,7 @@ public class BoardTest {
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .header("Authorization", accessToken)
                 .body(createRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
@@ -74,10 +78,11 @@ public class BoardTest {
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .header("Authorization", accessToken)
                 .body(createRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .post("/api/boards/update/{boardId}")
+                .post("/api/boards/update/{boardId}", 1L)
                 .then().log().all()
                 .extract();
 
@@ -87,7 +92,9 @@ public class BoardTest {
     @Test
     @DisplayName("게시글 삭제 요청")
     void deleteBoardTest() {
+        // 외래키 제약사항 -> 댓글!
         ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .header("Authorization", accessToken)
                 .when()
                 .delete("/api/boards/{boardId}", 1L)
                 .then().log().all()
@@ -101,6 +108,7 @@ public class BoardTest {
     void getBoardDtoTest() {
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .header("Authorization", accessToken)
                 .when()
                 .get("/api/boards/{boardId}", 1L)
                 .then().log().all()
@@ -120,6 +128,7 @@ public class BoardTest {
     @DisplayName("게시글 리스트 요청")
     void getBoardListTest() {
         ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .header("Authorization", accessToken)
                 .when()
                 .get("/api/boards/list/{missionId}", 1L)
                 .then().log().all()

@@ -1,26 +1,35 @@
 package com.mentoree.service;
 
+import com.mentoree.domain.entity.Career;
 import com.mentoree.domain.entity.Member;
+import com.mentoree.domain.repository.CareerRepository;
+import com.mentoree.domain.repository.CategoryRepository;
 import com.mentoree.domain.repository.MemberRepository;
 import com.mentoree.exception.DuplicateDataException;
 import com.mentoree.exception.NoDataFoundException;
 import com.mentoree.service.dto.MemberProfileDto;
 import com.mentoree.service.dto.MemberSignUpRequestDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final CareerRepository careerRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public void signUp(MemberSignUpRequestDto signUpRequest) {
         if(emailCheck(signUpRequest.getEmail()) || nicknameCheck(signUpRequest.getNickname())) {
             throw new DuplicateDataException(Member.class, "Member already exist");
         }
-        memberRepository.save(signUpRequest.toEntity("FORM"));
+        memberRepository.save(signUpRequest.toEntity("FORM", passwordEncoder));
     }
 
     @Transactional
@@ -54,8 +63,18 @@ public class MemberService {
 
     private void updateMemberProfile(MemberProfileDto updateProfile, Member findMember) {
         findMember.updateNickname(updateProfile.getNickname());
-        findMember.updateCareer(updateProfile.getHistories());
         findMember.updateUsername(updateProfile.getUsername());
+
+        List<Career> careerList = updateProfile.getHistories().stream()
+                .map(Career::new).collect(Collectors.toList());
+
+        careerRepository.deleteAllByMember(findMember);
+        findMember.getCareers().clear();
+
+        for (Career career : careerList) {
+            career.setMember(findMember);
+        }
+        careerRepository.saveAll(careerList);
     }
 
 

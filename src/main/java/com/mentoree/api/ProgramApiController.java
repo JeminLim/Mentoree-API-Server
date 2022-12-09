@@ -1,17 +1,22 @@
 package com.mentoree.api;
 
+import com.mentoree.config.security.AuthenticateUser;
+import com.mentoree.config.interceptors.Authority;
 import com.mentoree.service.ProgramService;
 import com.mentoree.service.dto.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
+import static com.mentoree.config.interceptors.Authority.Role.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,8 +27,8 @@ public class ProgramApiController {
 
     @PostMapping("/create")
     public ResponseEntity createProgram(@RequestBody ProgramCreateRequestDto createRequest) {
-        // Authority check needed
-        Long memberId = 1L; // security 적용 후, 로그인 정보 추추
+        validateUserRole();
+        Long memberId = getLoginMemberId();
 
         MentorDto responseBody = programService.createProgram(memberId, createRequest);
         Map<String, Object> result = new HashMap<>();
@@ -32,13 +37,10 @@ public class ProgramApiController {
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
+    @Authority(role = HOST)
     @PostMapping("/update/{programId}")
     public ResponseEntity updateProgram(@PathVariable("programId") Long programId,
                                         @RequestBody ProgramCreateRequestDto updateRequest) {
-
-        //Authority check needed
-
-
         ProgramInfoDto result = programService.updateProgram(programId, updateRequest);
         Map<String, Object> responseBody = new HashMap<>();
         responseBody.put("program", result);
@@ -49,9 +51,7 @@ public class ProgramApiController {
     @PostMapping("/apply")
     public ResponseEntity applyProgram(@RequestBody ProgramApplyDto applyRequest) {
 
-        //Extract login info from authentication
-        Long loginMember = 2L;
-
+        Long loginMember = getLoginMemberId();
         programService.applyProgram(loginMember, applyRequest);
 
         Map<String, Object> responseBody = new HashMap<>();
@@ -60,25 +60,27 @@ public class ProgramApiController {
         return ResponseEntity.ok().body(responseBody);
     }
 
-    @GetMapping("/applicants/{id}")
-    public ResponseEntity manageProgram(@PathVariable("id") Long programId) {
-        //authority check
+    @Authority(role = HOST)
+    @GetMapping("/applicants/{programId}")
+    public ResponseEntity manageProgram(@PathVariable("programId") Long programId) {
         List<ApplicantDto> applicantList = programService.getApplicantList(programId);
         Map<String, Object> responseBody = new HashMap<>();
         responseBody.put("applicants", applicantList);
         return ResponseEntity.ok().body(responseBody);
     }
 
-    @PostMapping("/applicants/accept/{applicantId}")
-    public ResponseEntity acceptApplicant(@PathVariable("applicantId") Long applicantId) {
-        //authority check
+    @Authority(role = HOST)
+    @PostMapping("/{programId}/applicants/accept/{applicantId}")
+    public ResponseEntity acceptApplicant(@PathVariable("programId") Long programId,
+                                          @PathVariable("applicantId") Long applicantId) {
         programService.acceptApplicant(applicantId);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/applicants/reject/{applicantId}")
-    public ResponseEntity rejectApplicant(@PathVariable("applicantId") Long applicantId) {
-        //authority check
+    @Authority(role = HOST)
+    @DeleteMapping("/{programId}/applicants/reject/{applicantId}")
+    public ResponseEntity rejectApplicant(@PathVariable("programId") Long programId,
+                                          @PathVariable("applicantId") Long applicantId) {
         programService.rejectApplicant(applicantId);
         return ResponseEntity.ok().build();
     }
@@ -91,9 +93,9 @@ public class ProgramApiController {
         return ResponseEntity.ok().body(responseBody);
     }
 
+    @Authority(role = HOST)
     @PostMapping("/withdraw/{programId}")
     public ResponseEntity withdrawProgram(@PathVariable("programId") Long programId) {
-        //authority check
         programService.withdrawProgram(programId);
         return ResponseEntity.ok().build();
     }
@@ -108,4 +110,20 @@ public class ProgramApiController {
         return ResponseEntity.ok().body(responseBody);
     }
 
+    private void validateUserRole() {
+        AuthenticateUser principal
+                = (AuthenticateUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        String authority = principal.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority).collect(Collectors.joining(","));
+
+        if(!authority.equals("ROLE_MENTOR"))
+            throw new IllegalStateException("권한이 없는 유저입니다.");
+    }
+
+    private Long getLoginMemberId() {
+        AuthenticateUser principal
+                = (AuthenticateUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return principal.getId();
+    }
 }
