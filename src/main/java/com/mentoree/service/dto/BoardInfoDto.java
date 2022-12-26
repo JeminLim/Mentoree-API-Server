@@ -17,6 +17,7 @@ public class BoardInfoDto {
     private String writerNickname;
     private String title;
     private String content;
+    private boolean temporal;
 
     public static BoardInfoDto of(Board board) {
         return BoardInfoDto.builder()
@@ -27,6 +28,7 @@ public class BoardInfoDto {
                 .writerNickname(board.getWriter().getNickname())
                 .title(board.getWriting().getTitle())
                 .content(board.getWriting().getContent())
+                .temporal(board.getTemporal())
                 .build();
     }
 

@@ -2,6 +2,12 @@ server:
   port: 8080
 
 spring:
+  devtools:
+    livereload:
+      enabled: true
+  freemarker:
+    cache: false
+
   redis:
     host: localhost
     port: 6379
@@ -10,25 +16,30 @@ spring:
     driver-class-name: org.mariadb.jdbc.Driver
     url: jdbc:mariadb://localhost:3306/mentoree
     username: mentoreeAdmin
-    password: ENC(IwBn8uQDUIgJ1vkdgD8w9w==) # 암호호 필요
+    password: ENC(fztun0WeZqcF07Vft490sk1Bd24hpUOq) # 암호화 필요
+
+  sql:
+    init:
+      mode: always
 
   jpa:
     database-platform: org.hibernate.dialect.MySQL57Dialect
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     properties:
       hibernate:
         format_sql: true
         use_sql_comments: true
     open-in-view: false
     show-sql: true
+    defer-datasource-initialization: true
 
   jwt:
-    secret-key: ENC(VD1w+3bhS2694KWKCfODQEMsUGvnwy5X) # 이후 암호화 필요
+    secret-key: ENC(VG+d6aUDx5uSAw/Cz1vv9OQJgGWoNRwO/pr+upHcIGRdE5FmOegkh2KGqEDk6Wy8)
     accessToken:
-      validation: 43200
+      validation: 600000 # 60 초
     refreshToken:
-      validation: 1209600
+      validation: 1296000000 # 14일
 
   security:
     oauth2:
@@ -42,4 +53,8 @@ spring:
               - email
 
 encrypt:
-  key: ENC(PCW7tfjXJzXKSTPdLMmp9IpOiZWbIyyE8z4DkbyCbSWwzkreaHkKYyz3bdXAP0K1) # 이후 암호화 필요
+  key: ENC(rMJON7kU7wrq0ECPrihtsB7LMogy/v4KMzNjf0Bc+srj2YY5M5BCqfg1va8nYY2w)
+
+files:
+  upload:
+    path: Users/jeminlim/Desktop/Mentoree/src/main/resources/static/images

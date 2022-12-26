@@ -2,7 +2,6 @@ package com.mentoree.atdd;
 
 import com.mentoree.config.utils.JwtUtils;
 import com.mentoree.service.dto.BoardCreateRequestDto;
-import com.mentoree.service.dto.MissionCreateRequestDto;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -19,15 +18,13 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 
-import java.time.LocalDate;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-@Sql({"/init.sql", "/setUpData.sql"})
+@Sql({"/schema.sql", "/setUpData.sql"})
 public class BoardTest {
 
     @LocalServerPort

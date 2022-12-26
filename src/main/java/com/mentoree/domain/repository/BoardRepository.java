@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface BoardRepository extends JpaRepository<Board, Long> {
+public interface BoardRepository extends JpaRepository<Board, Long>, CustomBoardRepository {
 
-    @Query("SELECT b FROM Board b WHERE b.mission.id = :missionId")
+    @Query("SELECT b FROM Board b WHERE b.mission.id = :missionId AND b.temporal = false")
     List<Board> findAllByMissionId(@Param("missionId") Long missionId);
 
     // fetch 조인으로 한방에 조회하는 것 => 인터셉터 완료 => 테스트 완료 => 시큐리티 완료

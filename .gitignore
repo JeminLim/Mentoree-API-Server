@@ -178,3 +178,4 @@ build/**
 .idea/**
 *.iml
 *.ConfigEncryption.java
+**/resources/static/images/**/

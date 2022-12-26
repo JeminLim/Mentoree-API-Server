@@ -195,7 +195,7 @@ public class MissionApiControllerTest {
                 .dueDate(LocalDate.now().plusDays(5))
                 .build();
 
-        when(missionService.getMissionInfoList(any())).thenReturn(List.of(expected));
+        when(missionService.getMissionInfoList(any(), any())).thenReturn(List.of(expected));
 
         mockMvc.perform(
                         get("/api/missions/list/{programId}", 1L)
@@ -206,7 +206,8 @@ public class MissionApiControllerTest {
                                 preprocessRequest(prettyPrint()),
                                 preprocessResponse(prettyPrint()),
                                 pathParameters(
-                                        parameterWithName("programId").description("Program id that missions are belonged")
+                                        parameterWithName("programId").description("Program id that missions are belonged"),
+                                        parameterWithName("expiration").description("Whether mission is expired or")
                                 ),
                                 responseFields(
                                         fieldWithPath("missionList[]").description("Mission list"),

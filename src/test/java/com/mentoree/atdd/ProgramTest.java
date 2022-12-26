@@ -2,11 +2,6 @@ package com.mentoree.atdd;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mentoree.config.utils.JwtUtils;
-import com.mentoree.domain.entity.*;
-import com.mentoree.domain.repository.CategoryRepository;
-import com.mentoree.domain.repository.MemberRepository;
-import com.mentoree.domain.repository.MentorRepository;
-import com.mentoree.domain.repository.ProgramRepository;
 import com.mentoree.service.dto.ProgramApplyDto;
 import com.mentoree.service.dto.ProgramCreateRequestDto;
 import io.restassured.RestAssured;
@@ -33,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-@Sql({"/init.sql", "/setUpData.sql"})
+@Sql({"/schema.sql", "/setUpData.sql"})
 public class ProgramTest {
 
     @LocalServerPort

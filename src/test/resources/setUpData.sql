@@ -117,13 +117,13 @@ insert into applicants(created_date, modified_date, approval,
 values ( now(), now(), false, 'plzzzz ', 'MENTEE', 3, 1);
 
 insert into mission(created_date, modified_date, due_date, content, title, program_id, member_id)
-values (now(), now(), '2022-12-05', 'testMission description', 'testMission', 1, 1);
+values (now(), now(), '2099-12-05', 'testMission description', 'testMission', 1, 1);
 
 insert into mission(created_date, modified_date, due_date, content, title, program_id, member_id)
-values (now(), now(), '2022-12-05', 'testMission2 description', 'testMission2', 1, 1);
+values (now(), now(), '2099-12-05', 'testMission2 description', 'testMission2', 1, 1);
 
-insert into board(created_date, modified_date, content, title, mission_id, member_id)
-values (now(), now(), 'test board description', 'testBoard', 1, 1);
+insert into board(created_date, modified_date, content, title, mission_id, member_id, temporal)
+values (now(), now(), 'test board description', 'testBoard', 1, 1, 0);
 
 insert into reply(created_date, modified_date, content, board_id, member_id, removal)
 values (now(), now(), 'test reply', 1, 1, 0);

@@ -21,12 +21,14 @@ spring:
         use_sql_comments: true
     open-in-view: false
     show-sql: true
+    defer-datasource-initialization: true
+
   h2:
     console:
       enabled: true
 
   jwt:
-    secret-key: ENC(VD1w+3bhS2694KWKCfODQEMsUGvnwy5X) # 이후 암호화 필요
+    secret-key: ENC(VG+d6aUDx5uSAw/Cz1vv9OQJgGWoNRwO/pr+upHcIGRdE5FmOegkh2KGqEDk6Wy8)
     accessToken:
       validation: 43200
     refreshToken:
@@ -42,9 +44,14 @@ spring:
             scope:
               - profile
               - email
+              -
+  sql:
+    init:
+      schema-locations: schema-test.sql
+
 encrypt:
-  key: ENC(PCW7tfjXJzXKSTPdLMmp9IpOiZWbIyyE8z4DkbyCbSWwzkreaHkKYyz3bdXAP0K1) # 이후 암호화 필요
+  key: ENC(rMJON7kU7wrq0ECPrihtsB7LMogy/v4KMzNjf0Bc+srj2YY5M5BCqfg1va8nYY2w)
 
 jasypt:
   encryptor:
-    password: M16aXng55CXtjPm9n2pNpGjAa
+    password: testkey

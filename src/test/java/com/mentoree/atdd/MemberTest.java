@@ -1,15 +1,11 @@
 package com.mentoree.atdd;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mentoree.config.utils.JwtUtils;
 import com.mentoree.domain.entity.History;
-import com.mentoree.domain.entity.Member;
-import com.mentoree.domain.entity.UserRole;
 import com.mentoree.domain.repository.MemberRepository;
 import com.mentoree.service.dto.MemberProfileDto;
 import com.mentoree.service.dto.MemberSignUpRequestDto;
 import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import lombok.extern.slf4j.Slf4j;
@@ -24,14 +20,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.web.WebAppConfiguration;
 
-import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -39,7 +30,7 @@ import static org.assertj.core.api.Assertions.*;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-@Sql({"/init.sql", "/setUpData.sql"})
+@Sql({"/schema.sql", "/setUpData.sql"})
 public class MemberTest {
 
     private final String EXIST_MEMBER_EMAIL = "memberA@email.com";
@@ -70,7 +61,7 @@ public class MemberTest {
                 .param("email", "memberA@email.com")
                 .param("password", "1234QWer!@")
                 .when()
-                .post("/login")
+                .post("/api/login")
                 .then().log().all()
                 .extract();
 

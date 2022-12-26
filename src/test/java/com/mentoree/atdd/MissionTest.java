@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.*;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-@Sql({"/init.sql", "/setUpData.sql"})
+@Sql({"/schema.sql", "/setUpData.sql"})
 public class MissionTest {
 
     @LocalServerPort
@@ -117,7 +117,7 @@ public class MissionTest {
                 .then().log().all()
                 .extract();
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
@@ -135,14 +135,14 @@ public class MissionTest {
         assertThat(response.jsonPath().getLong("mission.id")).isEqualTo(1);
         assertThat(response.jsonPath().getString("mission.title")).isEqualTo("testMission");
         assertThat(response.jsonPath().getString("mission.content")).isEqualTo("testMission description");
-        assertThat(response.jsonPath().getString("mission.dueDate")).isEqualTo("2022-12-05");
+        assertThat(response.jsonPath().getString("mission.dueDate")).isEqualTo("2099-12-05");
         assertThat(response.jsonPath().getLong("mission.programId")).isEqualTo(1);
         assertThat(response.jsonPath().getLong("mission.writerId")).isEqualTo(1);
         assertThat(response.jsonPath().getString("mission.writerNickname")).isEqualTo("memberANickname");
     }
 
     @Test
-    @DisplayName("해당 프로그램 소속 미션 리스트")
+    @DisplayName("해당 프로그램 소속 현재 진행 미션 리스트")
     void getMissionInfoListTest() {
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()

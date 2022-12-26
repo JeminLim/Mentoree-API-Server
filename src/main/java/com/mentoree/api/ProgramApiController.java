@@ -5,6 +5,7 @@ import com.mentoree.config.interceptors.Authority;
 import com.mentoree.service.ProgramService;
 import com.mentoree.service.dto.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,12 +19,19 @@ import java.util.stream.Collectors;
 
 import static com.mentoree.config.interceptors.Authority.Role.*;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/programs")
 public class ProgramApiController {
 
     private final ProgramService programService;
+
+    @GetMapping("/categories")
+    public ResponseEntity getCategories() {
+        Map<String, Object> responseBody = programService.getCategoryList();
+        return ResponseEntity.ok().body(responseBody);
+    }
 
     @PostMapping("/create")
     public ResponseEntity createProgram(@RequestBody ProgramCreateRequestDto createRequest) {
@@ -101,11 +109,17 @@ public class ProgramApiController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity getProgramList(@RequestParam(value = "maxId", required = false) Long maxId,
-                                        @RequestParam(value = "minId", required = false) Long minId,
+    public ResponseEntity getProgramList(@RequestParam(value = "maxId") Long maxId,
+                                        @RequestParam(value = "minId") Long minId,
                                         @RequestParam(value = "first", required = false) String firstCategory,
                                         @RequestParam(value = "second", required = false) String secondCategory) {
-        List<String> secondCategories = secondCategory == null ? null : List.of(secondCategory.split(","));
+        System.out.println(secondCategory);
+
+        firstCategory = firstCategory.isEmpty() ? null : firstCategory;
+        List<String> secondCategories = secondCategory.isEmpty() ? null : List.of(secondCategory.split(","));
+
+
+
         Map<String, Object> responseBody = programService.getProgramList(minId, maxId, firstCategory, secondCategories);
         return ResponseEntity.ok().body(responseBody);
     }

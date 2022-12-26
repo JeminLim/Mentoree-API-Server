@@ -17,17 +17,16 @@ public class BoardCreateRequestDto {
 
     @NotNull
     private Long missionId;
-    @NotNull
     private String title;
-    @NotNull
     private String description;
 
-    public Board toEntity(Mission mission, Member writer) {
+    public Board toEntity(Mission mission, Member writer, boolean temporal) {
         Writing writing = new Writing(title, description);
         return Board.builder()
                 .mission(mission)
                 .writer(writer)
                 .writing(writing)
+                .temporal(temporal)
                 .build();
 
     }
