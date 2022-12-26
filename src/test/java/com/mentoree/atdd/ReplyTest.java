@@ -2,12 +2,10 @@ package com.mentoree.atdd;
 
 import com.mentoree.config.utils.JwtUtils;
 import com.mentoree.service.dto.ReplyCreateRequestDto;
-import com.mentoree.service.dto.ReplyInfoDto;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import lombok.extern.slf4j.Slf4j;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,7 +27,7 @@ import static org.assertj.core.api.Assertions.*;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-@Sql({"/init.sql", "/setUpData.sql"})
+@Sql({"/schema.sql", "/setUpData.sql"})
 public class ReplyTest {
 
     @LocalServerPort

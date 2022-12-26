@@ -24,9 +24,14 @@ public class SecurityConfig {
     private final JwtUtils jwtUtils;
 
     private final String[] NO_AUTH_PATH = {
-            "/login",
+            "/api/login",
+            "/api/logout",
             "/api/login/**",
-            "/api/members/join/**"
+            "/api/reissue",
+            "/api/programs/categories",
+            "/api/programs/list",
+            "/api/members/join/**",
+            "/images/**",
     };
 
     @Bean
@@ -38,7 +43,7 @@ public class SecurityConfig {
                 .and().cors();
 
         security.formLogin()
-                .loginProcessingUrl("/login")
+                .loginProcessingUrl("/api/login")
                 .usernameParameter("email")
                 .passwordParameter("password")
                 .successForwardUrl("/api/login/success")
@@ -51,14 +56,18 @@ public class SecurityConfig {
                 .defaultSuccessUrl("/api/login/success");
 
         security.logout()
-                .logoutUrl("/api/logout")
+                .logoutUrl("/logout")
                 .deleteCookies("REFRESHTOKEN");
 
         security.authorizeRequests()
-                .antMatchers("/api/members/join/**",
+                .antMatchers(           "/images/**",
+                                        "/api/members/join/**",
                                         "/api/programs/list",
                                         "/api/programs/{\\d+}",
-                                        "/api/login/**").permitAll()
+                                        "/api/reissue",
+                                        "/api/programs/categories",
+                                        "/api/login/**"
+                ).permitAll()
                 .anyRequest().authenticated()
                 .and().exceptionHandling()
                 .authenticationEntryPoint(customAuthenticationEntryPoint);

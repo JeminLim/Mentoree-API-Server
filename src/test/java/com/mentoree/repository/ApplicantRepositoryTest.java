@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.*;
 
 @DataJpaTest
 @ActiveProfiles("test")
-@Sql({"/init.sql", "/setUpData.sql"})
+@Sql({"/schema.sql", "/setUpData.sql"})
 public class ApplicantRepositoryTest {
 
     @Autowired

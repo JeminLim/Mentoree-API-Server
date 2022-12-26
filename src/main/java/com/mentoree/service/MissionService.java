@@ -53,8 +53,8 @@ public class MissionService {
     }
 
     @Transactional(readOnly = true)
-    public List<MissionInfoDto> getMissionInfoList(Long programId) {
-        List<Mission> findResult = missionRepository.findAllByProgramId(programId);
+    public List<MissionInfoDto> getMissionInfoList(Long programId, Boolean expiration) {
+        List<Mission> findResult = missionRepository.findAllByProgramId(programId, expiration);
         return findResult.stream().map(MissionInfoDto::of).collect(Collectors.toList());
     }
 

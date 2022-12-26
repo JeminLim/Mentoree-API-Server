@@ -58,8 +58,6 @@ public class Member extends BaseTimeEntity {
     }
 
     public void updateUsername(String username) {
-        if(!StringUtils.hasText(this.username))
-            throw new IllegalArgumentException("이름을 변경할 수 없습니다.");
         this.username = username;
     }
 

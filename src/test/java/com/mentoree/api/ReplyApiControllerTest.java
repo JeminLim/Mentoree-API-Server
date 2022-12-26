@@ -1,6 +1,7 @@
 package com.mentoree.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mentoree.api.mock.WithMockCustomUser;
 import com.mentoree.config.WebConfig;
 import com.mentoree.config.interceptors.AuthorityInterceptor;
 import com.mentoree.generator.DummyDataBuilder;
@@ -58,6 +59,7 @@ public class ReplyApiControllerTest {
 
     @Test
     @DisplayName("댓글 등록 테스트")
+    @WithMockCustomUser
     void createReplyTest() throws Exception{
         ReplyCreateRequestDto createRequest = ReplyCreateRequestDto.builder()
                 .boardId(1L)

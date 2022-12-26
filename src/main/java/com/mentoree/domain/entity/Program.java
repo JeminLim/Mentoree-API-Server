@@ -68,7 +68,7 @@ public class Program extends BaseTimeEntity {
         this.category = category;
     }
 
-    public void incrementMentee() {
+    public void jointMentee() {
         if(this.mentee.size() == maxMember)
             this.state = ProgramState.HOLD_PAYMENT;
     }

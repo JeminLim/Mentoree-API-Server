@@ -56,8 +56,9 @@ public class MissionApiController {
     }
     @Authority(role = PARTICIPANT)
     @GetMapping("/list/{programId}")
-    public ResponseEntity getMissionInfoList(@PathVariable("programId") Long programId) {
-        List<MissionInfoDto> result = missionService.getMissionInfoList(programId);
+    public ResponseEntity getMissionInfoList(@PathVariable("programId") Long programId
+                                            , @RequestParam(required = false, defaultValue = "false") Boolean expiration) {
+        List<MissionInfoDto> result = missionService.getMissionInfoList(programId, expiration);
         Map<String, Object> responseBody = new HashMap<>();
         responseBody.put("missionList", result);
         return ResponseEntity.ok().body(responseBody);

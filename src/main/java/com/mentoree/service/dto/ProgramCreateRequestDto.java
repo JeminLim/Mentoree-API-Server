@@ -22,6 +22,7 @@ public class ProgramCreateRequestDto {
     @NotEmpty
     private String description;
     @NotNull
+    @Min(0)
     private Integer price;
 
     @NotNull

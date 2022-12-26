@@ -19,4 +19,11 @@ public class ControllerAdvice {
         final ErrorResponse response = ErrorResponse.of(ErrorCode.ILLEGAL_PARAMS, e.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(IllegalStateException.class)
+    protected ResponseEntity<ErrorResponse> handleIllegalStateException(IllegalStateException e) {
+        log.error("[IllegalStateException] error : {}", e.getMessage());
+        final ErrorResponse response = ErrorResponse.of(ErrorCode.ILLEGAL_STATEMENT, e.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
 }

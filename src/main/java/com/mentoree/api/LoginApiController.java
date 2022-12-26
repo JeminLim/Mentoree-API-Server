@@ -8,7 +8,9 @@ import com.mentoree.config.utils.EncryptUtils;
 import com.mentoree.config.utils.JwtUtils;
 import com.mentoree.exception.InvalidTokenException;
 import com.mentoree.exception.NoDataFoundException;
+import com.mentoree.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -24,12 +26,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
@@ -41,51 +43,31 @@ public class LoginApiController {
     private final JwtUtils jwtUtils;
     private final EncryptUtils encryptUtils;
     private final RedisUtils redisUtils;
+    private final MemberService memberService;
 
     @PostMapping("/login/success")
-    public ResponseEntity loginSuccess(HttpServletResponse response) {
+    public ResponseEntity loginSuccess() {
 
         Map<String, Object> userDetails = extractUserDetails();
         Long memberId = (Long) userDetails.get("id");
         String email = (String) userDetails.get("email");
         String authorities = (String) userDetails.get("authorities");
 
+        Map<String, Object> memberInfo = memberService.login(memberId);
 
-        String accessToken = jwtUtils.generateToken(memberId, email, authorities);
-        String identifier = RandomStringUtils.randomAlphanumeric(RANDOM_LENGTH);
-        RefreshToken refreshToken = new RefreshToken(identifier, memberId, authorities, accessToken);
-        return getResponseEntity(email, accessToken, identifier, refreshToken);
+        return createResponse(memberId, email, authorities, memberInfo);
     }
 
     @PostMapping("/reissue")
-    public ResponseEntity reissueAccessToken(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity reissueAccessToken(HttpServletRequest request) {
         String refresh = encryptUtils.decrypt(getCookie(request, "refresh").getValue());
-        String[] refreshInfo = refresh.split(",");
+        String[] refreshInfo = refresh.split("\\+");
 
         String email = refreshInfo[0];
         String identifier = refreshInfo[1];
         RefreshToken fromRedis = redisUtils.get(email, RefreshToken.class).orElseThrow(NoDataFoundException::new);
         validCheck(fromRedis, identifier, request.getHeader("Authorization"));
-
-        String newAccessToken = jwtUtils.generateToken(fromRedis.getMemberId(), email, fromRedis.getAuthorities());
-        String newIdentifier = RandomStringUtils.randomAlphanumeric(RANDOM_LENGTH);
-        RefreshToken updatedRefreshToken = fromRedis.update(newIdentifier, newAccessToken);
-        return getResponseEntity(email, newAccessToken, newIdentifier, updatedRefreshToken);
-    }
-
-    private ResponseEntity getResponseEntity(String email, String newAccessToken,
-                                             String newIdentifier, RefreshToken refreshToken) {
-        redisUtils.save(email, refreshToken);
-        String encrypt = encryptUtils.encrypt(email.concat("+").concat(newIdentifier));
-
-        ResponseCookie refreshCookie = createCookie("refresh", encrypt).build();
-
-        Map<String, Object> responseBody = new HashMap<>();
-        responseBody.put("accessToken", newAccessToken);
-
-        return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
-                .body(responseBody);
+        return createResponse(fromRedis.getMemberId(), email, fromRedis.getAuthorities());
     }
 
     private Map<String, Object> extractUserDetails() {
@@ -116,17 +98,6 @@ public class LoginApiController {
         result.put("authorities", authorities);
         return result;
     }
-
-    private ResponseCookieBuilder createCookie(String name, String value) {
-        ResponseCookieBuilder builder = ResponseCookie.from(name, value);
-        builder.maxAge(REFRESH_VALIDATION);
-        builder.path("/");
-        builder.sameSite("Lax");
-        builder.secure(true);
-        builder.httpOnly(true);
-        return builder;
-    }
-
     private Cookie getCookie(HttpServletRequest request, String name) {
         Cookie[] cookies = request.getCookies();
         return Arrays.stream(cookies).filter(c -> c.getName().equals(name))
@@ -137,5 +108,45 @@ public class LoginApiController {
         if(!refreshToken.getTokenId().equals(identifier)
                 && !refreshToken.getAccessToken().equals(accessToken))
             throw new InvalidTokenException("부적절한 토큰입니다", ErrorCode.INVALID_TOKEN);
+    }
+    private ResponseEntity createResponse(Long memberId, String email, String authorities, Map<String, Object> loginInfo) {
+        String accessToken = jwtUtils.generateToken(memberId, email, authorities);
+        Map<String, Object> responseBody = new HashMap<>();
+        responseBody.put("accessToken", accessToken);
+        responseBody.putAll(loginInfo);
+
+        ResponseCookie refreshCookie = generateRefreshToken(memberId, email, authorities, accessToken);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
+                .body(responseBody);
+    }
+    private ResponseEntity createResponse(Long memberId, String email, String authorities) {
+        String accessToken = jwtUtils.generateToken(memberId, email, authorities);
+        Map<String, Object> responseBody = new HashMap<>();
+        responseBody.put("accessToken", accessToken);
+        ResponseCookie refreshCookie = generateRefreshToken(memberId, email, authorities, accessToken);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
+                .body(responseBody);
+
+    }
+    private ResponseCookie generateRefreshToken(Long memberId, String email, String authorities, String accessToken) {
+        String identifier = RandomStringUtils.randomAlphanumeric(RANDOM_LENGTH);
+        RefreshToken refreshToken = new RefreshToken(identifier, memberId, authorities, accessToken);
+        redisUtils.save(email, refreshToken);
+        String encrypt = encryptUtils.encrypt(email.concat("+").concat(identifier));
+        ResponseCookie refreshCookie = createCookie("refresh", encrypt).build();
+        return refreshCookie;
+    }
+    private ResponseCookieBuilder createCookie(String name, String value) {
+        ResponseCookieBuilder builder = ResponseCookie.from(name, value);
+        builder.maxAge(REFRESH_VALIDATION);
+        builder.path("/");
+        builder.sameSite("Lax");
+        builder.secure(true);
+        builder.httpOnly(true);
+        return builder;
     }
 }

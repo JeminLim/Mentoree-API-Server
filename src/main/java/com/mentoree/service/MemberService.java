@@ -2,19 +2,23 @@ package com.mentoree.service;
 
 import com.mentoree.domain.entity.Career;
 import com.mentoree.domain.entity.Member;
-import com.mentoree.domain.repository.CareerRepository;
-import com.mentoree.domain.repository.CategoryRepository;
-import com.mentoree.domain.repository.MemberRepository;
+import com.mentoree.domain.entity.Mentee;
+import com.mentoree.domain.entity.Mentor;
+import com.mentoree.domain.repository.*;
 import com.mentoree.exception.DuplicateDataException;
 import com.mentoree.exception.NoDataFoundException;
 import com.mentoree.service.dto.MemberProfileDto;
 import com.mentoree.service.dto.MemberSignUpRequestDto;
+import com.mentoree.service.dto.MenteeDto;
+import com.mentoree.service.dto.MentorDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,8 +27,11 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final CareerRepository careerRepository;
+    private final MenteeRepository menteeRepository;
+    private final MentorRepository mentorRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @Transactional
     public void signUp(MemberSignUpRequestDto signUpRequest) {
         if(emailCheck(signUpRequest.getEmail()) || nicknameCheck(signUpRequest.getNickname())) {
             throw new DuplicateDataException(Member.class, "Member already exist");
@@ -55,14 +62,36 @@ public class MemberService {
 
     @Transactional
     public void withdrawMember(Long memberId) {
-
         Member findMember = memberRepository.findById(memberId).orElseThrow(NoDataFoundException::new);
         findMember.requestWithdraw();
+    }
 
+    @Transactional
+    public Map<String, Object> login(Long memberId) {
+        Member findMember = memberRepository.findById(memberId).orElseThrow(NoDataFoundException::new);
+        List<Mentor> participatedMentorList = mentorRepository.findAllByMemberId(memberId);
+        List<Mentee> participatedMenteeList = menteeRepository.findAllParticipatedMentee(memberId);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("MemberProfile", MemberProfileDto.of(findMember));
+        result.put("ParticipatedMentor", participatedMentorList.stream().map(MentorDto::of).collect(Collectors.toList()));
+        result.put("ParticipatedMentee", participatedMenteeList.stream().map(MenteeDto::of).collect(Collectors.toList()));
+
+        return result;
     }
 
     private void updateMemberProfile(MemberProfileDto updateProfile, Member findMember) {
-        findMember.updateNickname(updateProfile.getNickname());
+
+        String updateNickname = updateProfile.getNickname();
+        if(!findMember.getNickname().equals(updateNickname) && memberRepository.existsByNickname(updateNickname)) {
+            throw new DuplicateDataException("이미 존재하는 닉네임 입니다.");
+        }
+
+        if(updateProfile.getUsername() != null && findMember.getUsername() != null && !findMember.getUsername().equals(updateProfile.getUsername())) {
+            throw new IllegalStateException("이름은 두 번 이상 변경할 수 없습니다.");
+        }
+
+        findMember.updateNickname(updateNickname);
         findMember.updateUsername(updateProfile.getUsername());
 
         List<Career> careerList = updateProfile.getHistories().stream()

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mentoree.api.mock.WithMockCustomUser;
 import com.mentoree.config.WebConfig;
 import com.mentoree.config.interceptors.AuthorityInterceptor;
-import com.mentoree.config.security.AuthenticateUser;
 import com.mentoree.service.BoardService;
 import com.mentoree.service.dto.BoardCreateRequestDto;
 import com.mentoree.service.dto.BoardInfoDto;
@@ -18,15 +17,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -67,13 +63,14 @@ public class BoardApiControllerTest {
                 .build();
         String requestBody = objectMapper.writeValueAsString(createRequest);
 
-        doNothing().when(boardService).create(any(), any());
+        when(boardService.create(any(), any(), anyBoolean())).thenReturn(1L);
 
         mockMvc.perform(
                         post("/api/boards/create")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(requestBody))
                 .andExpect(status().isCreated())
+                .andExpect(jsonPath("boardId").value(1))
                 .andDo(
                         document("post-board-create",
                                 preprocessRequest(prettyPrint()),
@@ -82,6 +79,45 @@ public class BoardApiControllerTest {
                                         fieldWithPath("missionId").description("Mission pk that board is belonging to"),
                                         fieldWithPath("title").description("Board name"),
                                         fieldWithPath("description").description("Board description")
+                                ),
+                                responseFields(
+                                        fieldWithPath("boardId").description("board pk")
+                                )
+                        )
+                );
+    }
+
+    @Test
+    @DisplayName("게시글 생성 임시 저장 요청")
+    @WithMockCustomUser
+    void BoardTempCreateTest() throws Exception {
+
+        BoardCreateRequestDto createRequest = BoardCreateRequestDto.builder()
+                .missionId(1L)
+                .title("testMission")
+                .description("test mission")
+                .build();
+        String requestBody = objectMapper.writeValueAsString(createRequest);
+
+        when(boardService.create(any(), any(), anyBoolean())).thenReturn(1L);
+
+        mockMvc.perform(
+                        post("/api/boards/create/temp")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(requestBody))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("boardId").value(1))
+                .andDo(
+                        document("post-board-create-temp",
+                                preprocessRequest(prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                requestFields(
+                                        fieldWithPath("missionId").description("Mission pk that board is belonging to"),
+                                        fieldWithPath("title").description("Board name"),
+                                        fieldWithPath("description").description("Board description")
+                                ),
+                                responseFields(
+                                        fieldWithPath("boardId").description("board pk")
                                 )
                         )
                 );
@@ -172,7 +208,8 @@ public class BoardApiControllerTest {
                                         fieldWithPath("board.writerId").description("writer's member pk"),
                                         fieldWithPath("board.writerNickname").description("writer's nickname"),
                                         fieldWithPath("board.title").description("board title"),
-                                        fieldWithPath("board.content").description("board content")
+                                        fieldWithPath("board.content").description("board content"),
+                                        fieldWithPath("board.temporal").description("Whether board is temporal writing or not")
                                 )
                         )
                 );
@@ -212,9 +249,99 @@ public class BoardApiControllerTest {
                                         fieldWithPath("boardList[].writerId").description("writer's member pk"),
                                         fieldWithPath("boardList[].writerNickname").description("writer's nickname"),
                                         fieldWithPath("boardList[].title").description("board title"),
-                                        fieldWithPath("boardList[].content").description("board content")
+                                        fieldWithPath("boardList[].content").description("board content"),
+                                        fieldWithPath("boardList[].temporal").description("Whether board is temporal writing or not")
                                 )
                         )
                 );
     }
+
+    @Test
+    @DisplayName("임시 저장 테스트")
+    @WithMockCustomUser
+    void temporallySaveTest() throws Exception{
+        BoardCreateRequestDto createRequest = BoardCreateRequestDto.builder()
+                .missionId(1L)
+                .title("testMission")
+                .description("test mission")
+                .build();
+        String requestBody = objectMapper.writeValueAsString(createRequest);
+
+        when(boardService.create(anyLong(), any(), anyBoolean())).thenReturn(1L);
+
+        mockMvc.perform(
+                        post("/api/boards/create/temp")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(requestBody))
+                .andExpect(status().isOk())
+                .andDo(
+                        document("post-board-create-temp",
+                                preprocessRequest(prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                requestFields(
+                                        fieldWithPath("missionId").description("Mission pk that board is belonging to"),
+                                        fieldWithPath("title").description("Board name"),
+                                        fieldWithPath("description").description("Board description")
+                                )
+                        )
+                );
+    }
+
+    @Test
+    @DisplayName("임시 저장 글 요청 테스트 - 새로운 글 작성")
+    @WithMockCustomUser
+    void getTemporalWritingTest_first() throws Exception {
+
+        when(boardService.getTemporalWriting(any(), any())).thenReturn(Optional.ofNullable(null));
+
+        mockMvc.perform(
+                        get("/api/boards/{missionId}/temp", 1L)
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("writingBoard").isEmpty());
+    }
+
+    @Test
+    @DisplayName("임시 저장 글 요청")
+    @WithMockCustomUser
+    void getTemporalWriting_Has_Temporal_writing() throws Exception {
+        BoardInfoDto expected = BoardInfoDto.builder()
+                .id(1L)
+                .title("testBoard")
+                .writerId(1L)
+                .writerNickname("memberA")
+                .missionId(1L)
+                .missionTitle("testMission")
+                .content("test board for test mission")
+                .build();
+
+        when(boardService.getTemporalWriting(any(), any())).thenReturn(Optional.ofNullable(expected));
+
+        mockMvc.perform(
+                        get("/api/boards/{missionId}/temp", 1L)
+                            .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("writingBoard.id").value(1L))
+                .andExpect(jsonPath("writingBoard.title").value("testBoard"))
+                .andDo(
+                        document("get-board-temp",
+                                preprocessRequest(prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                pathParameters(
+                                        parameterWithName("missionId").description("Mission pk which is writing")
+                                ),
+                                responseFields(
+                                        fieldWithPath("writingBoard.id").description("board pk"),
+                                        fieldWithPath("writingBoard.missionId").description("mission pk that board is belonged to"),
+                                        fieldWithPath("writingBoard.missionTitle").description("mission title that board is belonged to"),
+                                        fieldWithPath("writingBoard.writerId").description("writer's member pk"),
+                                        fieldWithPath("writingBoard.writerNickname").description("writer's nickname"),
+                                        fieldWithPath("writingBoard.title").description("board title"),
+                                        fieldWithPath("writingBoard.content").description("board content"),
+                                        fieldWithPath("writingBoard.temporal").description("Whether board is temporal writing or not")
+                                )
+                        )
+                );
+    }
+
 }

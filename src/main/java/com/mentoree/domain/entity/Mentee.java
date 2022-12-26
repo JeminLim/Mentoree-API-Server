@@ -37,4 +37,8 @@ public class Mentee extends BaseTimeEntity {
         program.getMentee().add(this);
     }
 
+    public void paid() {
+        this.payment = true;
+    }
+
 }
