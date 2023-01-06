@@ -4,10 +4,10 @@ import com.mentoree.domain.entity.Category;
 import com.mentoree.domain.entity.Program;
 import com.mentoree.domain.repository.CategoryRepository;
 import com.mentoree.domain.repository.ProgramRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.PageRequest;
@@ -15,14 +15,18 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
+@Slf4j
 @DataJpaTest
 @ActiveProfiles("test")
+@Sql({"classpath:/schema-test.sql"})
 public class ProgramRepositoryTest {
 
     @Autowired
@@ -32,15 +36,15 @@ public class ProgramRepositoryTest {
     private CategoryRepository categoryRepository;
 
     @BeforeEach
-    @Sql({"classpath:/schema-test.sql"})
     void setUp() {
-
         Category programming = generateCategory("Programming");
         Category music = generateCategory("Music");
         Category java = generateSecondCategory("JAVA", programming);
         Category python = generateSecondCategory("PYTHON", programming);
         Category nodejs = generateSecondCategory("NODEJS", programming);
         Category guitar = generateSecondCategory("GUITAR", music);
+
+        List<Program> bulkProgram = new ArrayList<>();
 
         for (int i = 1; i <= 100; i++) {
             if(i % 7 == 0) {
@@ -52,7 +56,7 @@ public class ProgramRepositoryTest {
                         .maxMember(5)
                         .price(10000)
                         .build();
-                programRepository.save(guitarProgram);
+                bulkProgram.add(guitarProgram);
             } // 14 개, Guitar
             else if( i % 5 == 0) {
                 Program nodeProgram = Program.builder()
@@ -63,7 +67,7 @@ public class ProgramRepositoryTest {
                         .maxMember(5)
                         .price(10000)
                         .build();
-                programRepository.save(nodeProgram);
+                bulkProgram.add(nodeProgram);
             } // 18 개, Node
             else if(i % 3 == 0) {
                 Program pythonProgram = Program.builder()
@@ -74,7 +78,7 @@ public class ProgramRepositoryTest {
                         .maxMember(5)
                         .price(10000)
                         .build();
-                programRepository.save(pythonProgram);
+                bulkProgram.add(pythonProgram);
             } // 23 개, Python
             else {
                 Program javaProgram = Program.builder()
@@ -85,9 +89,10 @@ public class ProgramRepositoryTest {
                         .maxMember(5)
                         .price(10000)
                         .build();
-                programRepository.save(javaProgram);
+                bulkProgram.add(javaProgram);
             } // 45 개, Java
-        } // 97
+        }
+        programRepository.saveAll(bulkProgram);
     }
 
     private Category generateSecondCategory(String categoryName, Category parent) {
@@ -121,37 +126,47 @@ public class ProgramRepositoryTest {
     @Test
     @DisplayName("프로그램 필터링 테스트- 대분류")
     void getProgrammingProgramList() {
+
         Slice<Program> recentProgram = programRepository.getRecentProgramList( 95L, "Programming", null);
-        assertThat(recentProgram.getContent().size()).isEqualTo(4);
+
+        for (Program program : recentProgram) {
+            log.info("program id = {} " , program.getId());
+        }
 
         Pageable page = PageRequest.of(0, 8 - recentProgram.getContent().size());
         Long minId = recentProgram.getContent().get(recentProgram.getContent().size() - 1).getId();
         Slice<Program> programList = programRepository.getProgramList( minId, "Programming", null, page);
+
+        for (Program program : programList) {
+            log.info("program id = {} " , program.getId());
+        }
+
+        assertThat(recentProgram.getContent().size()).isEqualTo(4);
         assertThat(programList.getContent().size()).isEqualTo(4);
+
     }
 
 
     @Test
     @DisplayName("프로그램 필터링 테스트- 소분류")
     void getJavaProgramList() {
-        Slice<Program> recentProgram = programRepository.getRecentProgramList( 95L, "Programming", List.of("JAVA"));
-        assertThat(recentProgram.getContent().size()).isEqualTo(1);
 
+        Slice<Program> recentProgram = programRepository.getRecentProgramList( 95L, "Programming", List.of("JAVA"));
         Pageable page = PageRequest.of(0, 8 - recentProgram.getContent().size());
         Long minId = recentProgram.getContent().get(recentProgram.getContent().size() - 1).getId();
-
         Slice<Program> programList = programRepository.getProgramList( minId,"Programming", List.of("JAVA"), page);
-        assertThat(programList.getContent().size()).isEqualTo(7);
 
-        System.out.println("getRecentProgramList");
         for (Program program : recentProgram) {
-            System.out.println(program.getId());
+            log.info("program id = {} " , program.getId());
+        }
+        for (Program program : programList) {
+            log.info("program id = {} " , program.getId());
         }
 
-        System.out.println("getProgramList");
-        for (Program program : programList) {
-            System.out.println(program.getId());
-        }
+
+
+        assertThat(recentProgram.getContent().size()).isEqualTo(1);
+        assertThat(programList.getContent().size()).isEqualTo(7);
 
     }
 

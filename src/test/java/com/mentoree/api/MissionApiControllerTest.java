@@ -31,8 +31,7 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -199,6 +198,7 @@ public class MissionApiControllerTest {
 
         mockMvc.perform(
                         get("/api/missions/list/{programId}", 1L)
+                        .param("expiration", "false")
                 ).andExpect(status().isOk())
                 .andExpect(jsonPath("missionList.size()").value(1))
                 .andDo(
@@ -206,8 +206,9 @@ public class MissionApiControllerTest {
                                 preprocessRequest(prettyPrint()),
                                 preprocessResponse(prettyPrint()),
                                 pathParameters(
-                                        parameterWithName("programId").description("Program id that missions are belonged"),
-                                        parameterWithName("expiration").description("Whether mission is expired or")
+                                        parameterWithName("programId").description("Program id that missions are belonged")
+                                ),requestParameters(
+                                        parameterWithName("expiration").description("Whether mission due date is over or not")
                                 ),
                                 responseFields(
                                         fieldWithPath("missionList[]").description("Mission list"),

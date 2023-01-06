@@ -2,6 +2,11 @@ server:
   port: 8080
 
 spring:
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+
   devtools:
     livereload:
       enabled: true
@@ -55,6 +60,14 @@ spring:
 encrypt:
   key: ENC(rMJON7kU7wrq0ECPrihtsB7LMogy/v4KMzNjf0Bc+srj2YY5M5BCqfg1va8nYY2w)
 
-files:
-  upload:
-    path: Users/jeminlim/Desktop/Mentoree/src/main/resources/static/images
+cloud:
+  aws:
+    credentials:
+      access-key:
+      secret-key:
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+    s3:
+      bucket: mentoree-build

@@ -1,0 +1,139 @@
+= Program REST API Document
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+
+[[Program_API]]
+== Program API
+
+[[Program_프로그램_생성]]
+== 프로그램 생성
+=== Endpoint
+[POST] /api/programs/create
+include::{snippets}/post-program-create/http-request.adoc[]
+include::{snippets}/post-program-create/http-response.adoc[]
+
+=== Request
+include::{snippets}/post-program-create/request-body.adoc[]
+include::{snippets}/post-program-create/request-fields.adoc[]
+
+=== Response
+include::{snippets}/post-program-create/response-fields.adoc[]
+
+
+[[Program_프로그램_수정]]
+== 프로그램 수정
+=== Endpoint
+[POST] /api/programs/update/{programId}
+include::{snippets}/post-program-update/http-request.adoc[]
+include::{snippets}/post-program-update/http-response.adoc[]
+
+=== Request
+include::{snippets}/post-program-update/request-body.adoc[]
+include::{snippets}/post-program-update/path-parameters.adoc[]
+include::{snippets}/post-program-update/request-fields.adoc[]
+
+=== Response
+include::{snippets}/post-program-update/response-fields.adoc[]
+
+[[Program_프로그램_참가신청]]
+== 프로그램 참가신청
+=== Endpoint
+[POST] /api/programs/apply
+include::{snippets}/post-program-apply/http-request.adoc[]
+include::{snippets}/post-program-apply/http-response.adoc[]
+
+=== Request
+include::{snippets}/post-program-apply/request-body.adoc[]
+include::{snippets}/post-program-apply/request-fields.adoc[]
+
+=== Response
+include::{snippets}/post-program-apply/response-fields.adoc[]
+
+
+[[Program_프로그램_참가신청자_목록]]
+== 프로그램 참가신청자 목록 요청
+=== Endpoint
+[GET] /api/programs/applicants/{programId}
+include::{snippets}/get-program-applicants/http-request.adoc[]
+include::{snippets}/get-program-applicants/http-response.adoc[]
+
+=== Request
+include::{snippets}/get-program-applicants/path-parameters.adoc[]
+
+=== Response
+include::{snippets}/get-program-applicants/response-fields.adoc[]
+
+[[Program_프로그램_참가신청_승인]]
+== 프로그램 참가신청 승인
+=== Endpoint
+[POST] /api/programs/{programId}/applicants/accept/{applicantId}
+include::{snippets}/post-program-applicant-accept/http-request.adoc[]
+include::{snippets}/post-program-applicant-accept/http-response.adoc[]
+
+=== Request
+include::{snippets}/post-program-applicant-accept/path-parameters.adoc[]
+
+=== Response
+include::{snippets}/post-program-applicant-accept/response-body.adoc[]
+
+
+[[Program_프로그램_참가신청_거절]]
+== 프로그램 참가신청 거절
+=== Endpoint
+[DELETE] /api/programs/{programId}/applicants/reject/{applicantId}
+include::{snippets}/delete-program-applicant-reject/http-request.adoc[]
+include::{snippets}/delete-program-applicant-reject/http-response.adoc[]
+
+=== Request
+include::{snippets}/delete-program-applicant-reject/path-parameters.adoc[]
+
+=== Response
+include::{snippets}/delete-program-applicant-reject/response-fields.adoc[]
+
+
+[[Program_프로그램_정보_열람]]
+== 프로그램 정보 열람
+=== Endpoint
+[GET] /api/programs/{programId}
+include::{snippets}/get-program/http-request.adoc[]
+include::{snippets}/get-program/http-response.adoc[]
+
+=== Request
+include::{snippets}/get-program/path-parameters.adoc[]
+
+=== Response
+include::{snippets}/get-program/response-fields.adoc[]
+
+[[Program_프로그램_철회]]
+== 프로그램 철회
+=== Endpoint
+[POST] /api/programs/withdraw/{programId}
+include::{snippets}/post-program-withdraw/http-request.adoc[]
+include::{snippets}/post-program-withdraw/http-response.adoc[]
+
+=== Request
+include::{snippets}/post-program-withdraw/path-parameters.adoc[]
+
+=== Response
+include::{snippets}/post-program-withdraw/response-body.adoc[]
+
+[[Program_프로그램_리스트]]
+== 프로그램 리스트 조회
+=== Endpoint
+[GET] /api/programs/list
+include::{snippets}/get-program-list-secondfilter/http-request.adoc[]
+include::{snippets}/get-program-list-secondfilter/http-response.adoc[]
+
+=== Request
+include::{snippets}/get-program-list-secondfilter/request-parameters.adoc[]
+
+=== Response
+include::{snippets}/get-program-list-secondfilter/response-fields.adoc[]

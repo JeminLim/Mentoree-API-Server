@@ -1,0 +1,66 @@
+version: "3"
+
+networks:
+  mentoree-network:
+    driver: bridge
+    external: true
+
+volumes:
+  mentoree-persistence:
+    external: true
+
+services:
+  mentoree-redis:
+    image: redis
+    platform: linux/amd64
+    container_name: mentoree-redis
+    ports:
+      - "6379:6379"
+    restart: always
+    volumes:
+      - mentoree-persistence:/app/redis
+    networks:
+      - mentoree-network
+
+  mentoree-front:
+    image: wer080/mentoree-frontend:1.0
+    container_name: mentoree-front
+    ports:
+      - "80:80"
+      - "443:443"
+    restart: always
+    environment:
+      - TZ=Asia/Seoul
+    networks:
+      - mentoree-network
+
+  mentoree-backend:
+    image: wer080/mentoree-backend:1.0
+    container_name: mentoree-backend
+    networks:
+      - mentoree-network
+    ports:
+      - "8080:8080"
+    volumes:
+      - mentoree-persistence:/app/backend/
+    environment:
+      - PROFILE=local
+      - ENCKEY=testkey
+    depends_on:
+      - mentoree-mariadb
+      - mentoree-redis
+    links:
+      - mentoree-mariadb
+
+  mentoree-mariadb:
+    image: mariadb
+    container_name: mentoree-mariadb
+    restart: always
+    volumes:
+      - mentoree-persistence:/app/mariadb/
+    ports:
+      - "3306:3306"
+    networks:
+      - mentoree-network
+    environment:
+      - MYSQL_ROOT_PASSWORD=dbpassword

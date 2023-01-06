@@ -1,0 +1,73 @@
+= Reply REST API Document
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+
+[[Reply_API]]
+== Reply API
+
+
+[[Reply_댓글_생성]]
+== 댓글 생성
+=== Endpoint
+[POST] /api/replies/create
+include::{snippets}/post-replies-create/http-request.adoc[]
+include::{snippets}/post-replies-create/http-response.adoc[]
+
+=== Request
+include::{snippets}/post-replies-create/request-fields.adoc[]
+
+=== Response
+include::{snippets}/post-replies-create/response-fields.adoc[]
+
+
+[[Reply_댓글_수정]]
+== 댓글 수정
+=== Endpoint
+[PATCH] /api/replies/update/{replyId}
+include::{snippets}/patch-replies-update/http-request.adoc[]
+include::{snippets}/patch-replies-update/http-response.adoc[]
+
+=== Request
+include::{snippets}/patch-replies-update/path-parameters.adoc[]
+include::{snippets}/patch-replies-update/request-fields.adoc[]
+
+=== Response
+include::{snippets}/patch-replies-update/response-fields.adoc[]
+
+
+[[Reply_댓글_삭제]]
+== 댓글 삭제
+=== Endpoint
+[POST] /api/replies/remove/{replyId}
+include::{snippets}/post-replies-remove/http-request.adoc[]
+include::{snippets}/post-replies-remove/http-response.adoc[]
+
+=== Request
+include::{snippets}/post-replies-remove/path-parameters.adoc[]
+
+=== Response
+include::{snippets}/post-replies-remove/http-response.adoc[]
+
+
+[[Reply_댓글_목록]]
+== 댓글 목록 요청
+=== Endpoint
+[GET] /api/replies/list/{boardId}
+include::{snippets}/get-replies-list/http-request.adoc[]
+include::{snippets}/get-replies-list/http-response.adoc[]
+
+=== Request
+include::{snippets}/get-replies-list/path-parameters.adoc[]
+
+=== Response
+include::{snippets}/get-replies-list/response-fields.adoc[]
+
+

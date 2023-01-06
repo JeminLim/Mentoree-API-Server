@@ -44,10 +44,9 @@ spring:
             scope:
               - profile
               - email
-              -
   sql:
     init:
-      schema-locations: schema-test.sql
+      schema-locations: classpath:schema-test.sql
 
 encrypt:
   key: ENC(rMJON7kU7wrq0ECPrihtsB7LMogy/v4KMzNjf0Bc+srj2YY5M5BCqfg1va8nYY2w)
@@ -55,3 +54,7 @@ encrypt:
 jasypt:
   encryptor:
     password: testkey
+
+files:
+  upload:
+    path: Users/jeminlim/Desktop/Mentoree/src/main/resources/static/images

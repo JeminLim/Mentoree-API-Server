@@ -28,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-@Sql({"/schema.sql", "/setUpData.sql"})
+@Sql({"/schema-test.sql", "/setUpData.sql"})
 public class ProgramTest {
 
     @LocalServerPort
@@ -209,7 +209,12 @@ public class ProgramTest {
     @DisplayName("프로그램 목록 필터링 - No Filter, First filter, Second filter")
     void getProgramListWithFilter() {
         // No Filtering (request all)
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
+        ExtractableResponse<Response> response = RestAssured.given()
+                .queryParam("maxId", 0)
+                .queryParam("minId", 0)
+                .queryParam("first", "")
+                .queryParam("second", "")
+                .log().all()
                 .header("Authorization", accessToken)
                 .when().get("/api/programs/list")
                 .then().log().all()
@@ -225,7 +230,10 @@ public class ProgramTest {
         // Select first category
         ExtractableResponse<Response> responseFirstFilter = RestAssured.given()
                 .header("Authorization", accessToken)
+                .queryParam("maxId", 0)
+                .queryParam("minId", 0)
                 .queryParam("first", "Programming")
+                .queryParam("second", "")
                 .log().all()
                 .when().get("/api/programs/list")
                 .then().log().all()
@@ -241,6 +249,8 @@ public class ProgramTest {
         // Select second category
         ExtractableResponse<Response> responseSecondFilter = RestAssured.given()
                 .header("Authorization", accessToken)
+                .queryParam("maxId", 0)
+                .queryParam("minId", 0)
                 .queryParam("first", "Programming")
                 .queryParam("second", "JAVA")
                 .log().all()

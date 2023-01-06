@@ -125,6 +125,8 @@ public class MemberServiceTest {
                 LocalDate.of(2011,1,1),
                 LocalDate.of(2022,1,1),
                 "oldPosition"));
+        List<Career> career = histories.stream().map(Career::new).collect(Collectors.toList());
+        career.get(0).setMember(member);
         return member;
     }
 }
