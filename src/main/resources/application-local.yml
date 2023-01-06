@@ -1,0 +1,60 @@
+server:
+  port: 8080
+
+spring:
+  devtools:
+    livereload:
+      enabled: true
+  freemarker:
+    cache: false
+
+  redis:
+    host: mentoree-redis
+    port: 6379
+
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://mentoree-mariadb:3306/mentoree
+    username: mentoreeAdmin
+    password: ENC(fztun0WeZqcF07Vft490sk1Bd24hpUOq) # 암호화 필요
+
+  sql:
+    init:
+      mode: always
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL57Dialect
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: true
+    open-in-view: false
+    show-sql: true
+    defer-datasource-initialization: true
+
+  jwt:
+    secret-key: ENC(VG+d6aUDx5uSAw/Cz1vv9OQJgGWoNRwO/pr+upHcIGRdE5FmOegkh2KGqEDk6Wy8)
+    accessToken:
+      validation: 600000 # 60 초
+    refreshToken:
+      validation: 1296000000 # 14일
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: client-id #google client id
+            client-secret: client-secret  #암호화 필요
+            scope:
+              - profile
+              - email
+
+encrypt:
+  key: ENC(rMJON7kU7wrq0ECPrihtsB7LMogy/v4KMzNjf0Bc+srj2YY5M5BCqfg1va8nYY2w)
+
+files:
+  upload:
+    path: Users/jeminlim/Desktop/Mentoree/src/main/resources/static/images

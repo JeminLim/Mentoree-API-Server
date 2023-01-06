@@ -1,15 +1,23 @@
+buildscript {
+	ext {
+		queryDslVersion = "5.0.0"
+	}
+}
+
 plugins {
 	id 'java'
 	id 'org.springframework.boot' version '2.7.5'
 	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+	id "org.asciidoctor.jvm.convert" version "3.3.2"
 	id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 }
 
-group = 'com'
-version = '0.0.1-SNAPSHOT'
+group = 'com.mentoree'
+version = '1.0'
 sourceCompatibility = '11'
 
 configurations {
+	asciidoctorExtensions
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
@@ -23,26 +31,111 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'com.querydsl:querydsl-jpa'
+
+	//devtool
+	implementation 'org.springframework.boot:spring-boot-devtools:2.7.6'
+
+	//QueryDSL
+	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
+	annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}"
+
+	//RestAssured
+	implementation 'io.rest-assured:rest-assured:4.4.0'
+
+	//Spring Rest docs
+	asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+
+	//Spring security
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	testImplementation group: 'org.springframework.security', name: 'spring-security-test'
+
+	//jwt
+	implementation 'com.auth0:java-jwt:3.19.2'
+
+	//Oauth2 client
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+	//redis
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	//embedded-redis
+	implementation group: 'it.ozimov', name: 'embedded-redis', version: '0.7.2'
+
+	//jasypt
+	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.4'
+
+	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
+	implementation 'commons-io:commons-io:2.11.0'
+	implementation 'org.apache.httpcomponents:httpclient:4.5.13'
+	implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
+	implementation group: 'org.apache.commons', name: 'commons-text', version: '1.8'
+
+	//aws
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+
 
 	compileOnly 'org.projectlombok:lombok'
+	testCompileOnly 'org.projectlombok:lombok'
+	testAnnotationProcessor 'org.projectlombok:lombok'
+
 	runtimeOnly 'com.h2database:h2'
 	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
-tasks.named('test') {
-	useJUnitPlatform()
+ext {
+	snippetsDir = file('build/generated-snippets')
 }
 
+test {
+	outputs.dir snippetsDir
+	useJUnitPlatform()
+	systemProperty 'jasypt.encryptor.password', project.getProperties().get("jasypt.encryptor.password")
+}
 
-//querydsl 추가 시작
+asciidoctor {
+	dependsOn test
+	configurations 'asciidoctorExtensions'
+	inputs.dir snippetsDir
+
+	sources {
+		include("**/index.adoc", "**/common/*.adoc")
+	}
+  
+	baseDirFollowsSourceFile()
+}
+
+asciidoctor.doFirst {
+	delete file('src/main/resources/static/docs')
+}
+
+task copyDocument(type: Copy) {
+	dependsOn asciidoctor
+	from file("build/docs/asciidoc")
+	into file("src/main/resources/static/docs")
+}
+
+build {
+	dependsOn copyDocument
+}
+
+bootJar {
+	dependsOn asciidoctor
+	copy {
+		from "${asciidoctor.outputDir}"
+		into "BOOT-INF/classes/static/docs"
+	}
+}
+
+//querydsl
 def querydslDir = "$buildDir/generated/querydsl"
 querydsl {
 	jpa = true
 	querydslSourcesDir = querydslDir
 }
+
 sourceSets {
 	main.java.srcDir querydslDir
 }
