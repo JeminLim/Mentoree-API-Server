@@ -317,7 +317,7 @@ public class ProgramApiControllerTest {
     }
 
     @Test
-    @DisplayName("프로ㅡ램 정보 열람")
+    @DisplayName("프로그램 정보 열람")
     void getProgramInfoTest() throws Exception {
         Member member = builder.generateMember("memberA", UserRole.MENTOR);
         Category category = builder.generateCategory("Programming", "JAVA");
@@ -336,7 +336,7 @@ public class ProgramApiControllerTest {
                 .andExpect(jsonPath("program.id").value(1))
                 .andExpect(jsonPath("program.programName").value("testProgram"))
                 .andDo(
-                        document("delete-program-applicant-reject",
+                        document("get-program",
                                 preprocessRequest(prettyPrint()),
                                 preprocessResponse(prettyPrint()),
                                 pathParameters(
@@ -398,6 +398,8 @@ public class ProgramApiControllerTest {
                     get("/api/programs/list")
                         .param("maxId", "0")
                         .param("minId", "0")
+                        .param("first", "")
+                        .param("second", "")
                 ).andExpect(status().isOk())
                 .andExpect(jsonPath("programList.size()").value(8))
                 .andDo(
@@ -406,7 +408,9 @@ public class ProgramApiControllerTest {
                                 preprocessResponse(prettyPrint()),
                                 requestParameters(
                                         parameterWithName("maxId").description("Maximum id for program list"),
-                                        parameterWithName("minId").description("Minimum id for program list")
+                                        parameterWithName("minId").description("Minimum id for program list"),
+                                        parameterWithName("first").description("first selected category name"),
+                                        parameterWithName("second").description("second selected categories name")
                                 ),
                                 responseFields(
                                         fieldWithPath("programList[]").description("Program list"),
@@ -449,6 +453,7 @@ public class ProgramApiControllerTest {
                         .param("maxId", "0")
                         .param("minId", "0")
                         .param("first", "Programming")
+                        .param("second", "")
                 ).andExpect(status().isOk())
                 .andExpect(jsonPath("programList.size()").value(5))
                 .andDo(
@@ -458,7 +463,8 @@ public class ProgramApiControllerTest {
                                 requestParameters(
                                         parameterWithName("maxId").description("Maximum id for program list"),
                                         parameterWithName("minId").description("Minimum id for program list"),
-                                        parameterWithName("first").description("First category to filtering")
+                                        parameterWithName("first").description("first selected category name"),
+                                        parameterWithName("second").description("second selected categories name")
                                 ),
                                 responseFields(
                                         fieldWithPath("programList[]").description("Program list"),
@@ -510,8 +516,8 @@ public class ProgramApiControllerTest {
                                 requestParameters(
                                         parameterWithName("maxId").description("Maximum id for program list"),
                                         parameterWithName("minId").description("Minimum id for program list"),
-                                        parameterWithName("first").description("First category to filtering"),
-                                        parameterWithName("second").description("Second categories to filtering, maximum 5 types")
+                                        parameterWithName("first").description("first selected category name"),
+                                        parameterWithName("second").description("second selected categories name")
                                 ),
                                 responseFields(
                                         fieldWithPath("programList[]").description("Program list"),

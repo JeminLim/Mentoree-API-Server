@@ -1,3 +1,5 @@
+
+drop table if exists attach_image;
 drop table if exists applicants;
 drop table if exists career;
 drop table if exists mentor;
@@ -8,7 +10,6 @@ drop table if exists mission;
 drop table if exists member;
 drop table if exists program;
 drop table if exists categories;
-drop table if exists attach_image;
 drop table if exists hibernate_sequence;
 
 CREATE TABLE categories (

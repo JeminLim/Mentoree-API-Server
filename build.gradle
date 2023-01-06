@@ -12,8 +12,8 @@ plugins {
 	id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 }
 
-group = 'com'
-version = '0.0.1-SNAPSHOT'
+group = 'com.mentoree'
+version = '1.0'
 sourceCompatibility = '11'
 
 configurations {
@@ -70,6 +70,10 @@ dependencies {
 	implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
 	implementation group: 'org.apache.commons', name: 'commons-text', version: '1.8'
 
+	//aws
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+
 
 	compileOnly 'org.projectlombok:lombok'
 	testCompileOnly 'org.projectlombok:lombok'
@@ -88,7 +92,7 @@ ext {
 test {
 	outputs.dir snippetsDir
 	useJUnitPlatform()
-	systemProperty 'jasypt.encryptor.password', findProperty("jasypt.encryptor.password")
+	systemProperty 'jasypt.encryptor.password', project.getProperties().get("jasypt.encryptor.password")
 }
 
 asciidoctor {
@@ -119,8 +123,9 @@ build {
 
 bootJar {
 	dependsOn asciidoctor
-	from("{asciidoctor.outputDir}/html5") {
-		into 'static/docs'
+	copy {
+		from "${asciidoctor.outputDir}"
+		into "BOOT-INF/classes/static/docs"
 	}
 }
 

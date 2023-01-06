@@ -44,16 +44,12 @@ public class ReplyApiController {
 
     @PostMapping("/remove/{replyId}")
     public ResponseEntity removeReply(@PathVariable("replyId") Long replyId) {
-        //Authority check
-
         replyService.remove(replyId);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/list/{boardId}")
     public ResponseEntity getReplyList(@PathVariable("boardId") Long boardId) {
-        //Authority check
-
         List<ReplyInfoDto> replyList = replyService.getReplyList(boardId);
         Map<String, Object> responseBody = new HashMap<>();
         responseBody.put("replyList", replyList);

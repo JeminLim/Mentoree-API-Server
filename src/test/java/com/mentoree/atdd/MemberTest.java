@@ -30,13 +30,13 @@ import static org.assertj.core.api.Assertions.*;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-@Sql({"/schema.sql", "/setUpData.sql"})
+@Sql({"/schema-test.sql", "/setUpData.sql"})
 public class MemberTest {
 
     private final String EXIST_MEMBER_EMAIL = "memberA@email.com";
-    private final String EXIST_MEMBER_NICKNAME = "memberA";
+    private final String EXIST_MEMBER_NICKNAME = "memberANickname";
     private final String EXIST_MEMBER_PASSWORD = "1234QWer!@";
-    private final String EXIST_MEMBER_NAME = "memberName";
+    private final String EXIST_MEMBER_NAME = "memberA";
 
     @LocalServerPort
     int port;

@@ -87,7 +87,9 @@ public class MemberService {
             throw new DuplicateDataException("이미 존재하는 닉네임 입니다.");
         }
 
-        if(updateProfile.getUsername() != null && findMember.getUsername() != null && !findMember.getUsername().equals(updateProfile.getUsername())) {
+        if(updateProfile.getUsername() != null
+                && findMember.getUsername() != null
+                && !findMember.getUsername().equals(updateProfile.getUsername())) {
             throw new IllegalStateException("이름은 두 번 이상 변경할 수 없습니다.");
         }
 

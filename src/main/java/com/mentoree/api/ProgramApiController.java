@@ -111,8 +111,8 @@ public class ProgramApiController {
     @GetMapping("/list")
     public ResponseEntity getProgramList(@RequestParam(value = "maxId") Long maxId,
                                         @RequestParam(value = "minId") Long minId,
-                                        @RequestParam(value = "first", required = false) String firstCategory,
-                                        @RequestParam(value = "second", required = false) String secondCategory) {
+                                        @RequestParam(value = "first") String firstCategory,
+                                        @RequestParam(value = "second") String secondCategory) {
         System.out.println(secondCategory);
 
         firstCategory = firstCategory.isEmpty() ? null : firstCategory;

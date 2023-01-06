@@ -1,0 +1,129 @@
+= Board REST API Document
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+
+[[Board_API]]
+== Board API
+
+
+[[Board_게시글_생성]]
+== 게시글 생성
+=== Endpoint
+[POST] /api/boards/create
+include::{snippets}/post-board-create/http-request.adoc[]
+include::{snippets}/post-board-create/http-response.adoc[]
+
+=== Request
+include::{snippets}/post-board-create/request-fields.adoc[]
+
+=== Response
+include::{snippets}/post-board-create/response-fields.adoc[]
+
+
+[[Board_게시글_임시저장]]
+== 게시글 임시저장
+=== Endpoint
+[POST] /api/boards/create/temp
+include::{snippets}/post-board-create-temp/http-request.adoc[]
+include::{snippets}/post-board-create-temp/http-response.adoc[]
+
+=== Request
+include::{snippets}/post-board-create-temp/request-fields.adoc[]
+
+=== Response
+include::{snippets}/post-board-create-temp/response-fields.adoc[]
+
+
+[[Board_게시글_임시저장_불러오기]]
+== 게시글 임시저장 불러오기
+=== Endpoint
+[GET] /api/boards/{missionId}/temp
+include::{snippets}/get-board-temp/http-request.adoc[]
+include::{snippets}/get-board-temp/http-response.adoc[]
+
+=== Request
+include::{snippets}/get-board-temp/path-parameters.adoc[]
+
+=== Response
+include::{snippets}/get-board-temp/response-fields.adoc[]
+
+
+[[Board_게시글_수정]]
+== 게시글 수정
+=== Endpoint
+[POST] /api/boards/update/{boardId}
+include::{snippets}/post-board-update/http-request.adoc[]
+include::{snippets}/post-board-update/http-response.adoc[]
+
+=== Request
+include::{snippets}/post-board-update/request-fields.adoc[]
+
+=== Response
+include::{snippets}/post-board-update/http-response.adoc[]
+
+
+[[Board_게시글_삭제]]
+== 게시글 삭제
+=== Endpoint
+[DELETE] /api/boards/{boardId}
+include::{snippets}/delete-board/http-request.adoc[]
+include::{snippets}/delete-board/http-response.adoc[]
+
+=== Request
+include::{snippets}/delete-board/path-parameters.adoc[]
+
+=== Response
+include::{snippets}/delete-board/http-response.adoc[]
+
+[[Board_게시글_열람]]
+== 게시글 열람
+=== Endpoint
+[GET] /api/boards/{boardId}
+include::{snippets}/get-board/http-request.adoc[]
+include::{snippets}/get-board/http-response.adoc[]
+
+=== Request
+include::{snippets}/get-board/path-parameters.adoc[]
+
+=== Response
+include::{snippets}/get-board/response-fields.adoc[]
+
+
+[[Board_게시글_리스트]]
+== 게시글 리스트
+=== Endpoint
+[GET] /api/boards/list/{missionId}
+include::{snippets}/get-board-list/http-request.adoc[]
+include::{snippets}/get-board-list/http-response.adoc[]
+
+=== Request
+include::{snippets}/get-board-list/path-parameters.adoc[]
+
+=== Response
+include::{snippets}/get-board-list/response-fields.adoc[]
+
+[[Board_게시글_이미지]]
+== 게시글 이미지 업로드
+=== Endpoint
+[POST] /api/boards/{boardId}/images
+include::{snippets}/post-board-upload-image/http-request.adoc[]
+include::{snippets}/post-board-upload-image/http-response.adoc[]
+
+=== Request
+include::{snippets}/post-board-upload-image/path-parameters.adoc[]
+include::{snippets}/post-board-upload-image/request-parts.adoc[]
+
+=== Response
+include::{snippets}/post-board-upload-image/response-fields.adoc[]
+
+
+
+

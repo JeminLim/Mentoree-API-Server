@@ -17,21 +17,26 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.mock.web.MockPart;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -195,7 +200,7 @@ public class BoardApiControllerTest {
                 .andExpect(jsonPath("board.id").value(1))
                 .andExpect(jsonPath("board.title").value("testBoard"))
                 .andDo(
-                        document("delete-boards",
+                        document("get-board",
                                 preprocessRequest(prettyPrint()),
                                 preprocessResponse(prettyPrint()),
                                 pathParameters(
@@ -235,7 +240,7 @@ public class BoardApiControllerTest {
                 ).andExpect(status().isOk())
                 .andExpect(jsonPath("boardList.size()").value(1))
                 .andDo(
-                        document("get-missions",
+                        document("get-missions-list",
                                 preprocessRequest(prettyPrint()),
                                 preprocessResponse(prettyPrint()),
                                 pathParameters(
@@ -339,6 +344,44 @@ public class BoardApiControllerTest {
                                         fieldWithPath("writingBoard.title").description("board title"),
                                         fieldWithPath("writingBoard.content").description("board content"),
                                         fieldWithPath("writingBoard.temporal").description("Whether board is temporal writing or not")
+                                )
+                        )
+                );
+    }
+
+    @Test
+    @DisplayName("게시글 이미지 업로드")
+    @WithMockCustomUser
+    void uploadImageTest() throws Exception {
+
+        MockMultipartFile mockFile
+                = new MockMultipartFile("image",
+                "logo.png",
+                "image/png",
+                new FileInputStream("/Users/jeminlim/Desktop/Mentoree_front/src/assets/logo.png"));
+
+
+        when(boardService.uploadImages(anyLong(), any())).thenReturn("tempPath");
+
+        mockMvc.perform(
+                    multipart("/api/boards/{boardId}/images", 1L)
+                            .file(mockFile)
+                ).andExpect(status().isOk())
+                .andExpect(jsonPath("path").value("tempPath"))
+                .andExpect(jsonPath("filename").value("logo.png"))
+                .andDo(
+                        document("post-board-upload-image",
+                                preprocessRequest(prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                pathParameters(
+                                        parameterWithName("boardId").description("Board pk which is writing")
+                                ),
+                                requestParts(
+                                        partWithName("image").description("image file to upload")
+                                ),
+                                responseFields(
+                                        fieldWithPath("path").description("Resource path which is saved"),
+                                        fieldWithPath("filename").description("Filename of image file")
                                 )
                         )
                 );

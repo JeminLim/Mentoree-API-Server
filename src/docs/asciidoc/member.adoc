@@ -1,0 +1,108 @@
+= Member REST API Document
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+
+[[Member_API]]
+== Member API
+
+[[Member_회원가입]]
+== 회원가입 요청
+=== Endpoint
+[POST] /api/members/join
+include::{snippets}/post-member-join/http-request.adoc[]
+include::{snippets}/post-member-join/http-response.adoc[]
+
+=== Request
+include::{snippets}/post-member-join/request-fields.adoc[]
+
+=== Response
+include::{snippets}/post-member-join/response-body.adoc[]
+
+[[Member_이메일_중복확인]]
+== 이메일 중복확인
+=== Endpoint
+[GET] /api/members/join/check/email
+include::{snippets}/get-member-email-check/http-request.adoc[]
+include::{snippets}/get-member-email-check/http-response.adoc[]
+
+=== Request
+include::{snippets}/get-member-email-check/request-parameters.adoc[]
+
+=== Response
+include::{snippets}/get-member-email-check/response-fields.adoc[]
+
+
+[[Member_닉네임_중복확인]]
+== 닉네임 중복확인
+=== Endpoint
+[GET] /api/members/join/check/nickname
+include::{snippets}/get-member-nickname-check/http-request.adoc[]
+include::{snippets}/get-member-nickname-check/http-response.adoc[]
+
+=== Request
+include::{snippets}/get-member-nickname-check/request-parameters.adoc[]
+
+=== Response
+include::{snippets}/get-member-nickname-check/response-fields.adoc[]
+
+[[Member_프로필_요청]]
+== 프로필 요청
+=== Endpoint
+[GET] /api/members/profiles/{id}
+include::{snippets}/get-member-profile/http-request.adoc[]
+include::{snippets}/get-member-profile/http-response.adoc[]
+
+=== Request
+include::{snippets}/get-member-profile/path-parameters.adoc[]
+
+=== Response
+include::{snippets}/get-member-profile/response-fields.adoc[]
+
+[[Member_프로필_수정]]
+== 프로필 수정
+=== Endpoint
+[POST] /api/members/profiles
+include::{snippets}/post-member-profile/http-request.adoc[]
+include::{snippets}/post-member-profile/http-response.adoc[]
+
+=== Request
+include::{snippets}/post-member-profile/request-body.adoc[]
+
+=== Response
+include::{snippets}/post-member-profile/response-fields.adoc[]
+
+
+[[Member_회원전환]]
+== 회원전환
+=== Endpoint
+[POST] /api/members/transform
+include::{snippets}/post-member-transform/http-request.adoc[]
+include::{snippets}/post-member-transform/http-response.adoc[]
+
+=== Request
+include::{snippets}/post-member-transform/request-body.adoc[]
+
+=== Response
+include::{snippets}/post-member-transform/response-fields.adoc[]
+
+[[Member_회원탈퇴]]
+== 회원탈퇴
+=== Endpoint
+[POST] /api/members/withdraw/{id}
+include::{snippets}/post-member-withdraw/http-request.adoc[]
+include::{snippets}/post-member-withdraw/http-response.adoc[]
+
+=== Request
+include::{snippets}/post-member-withdraw/path-parameters.adoc[]
+
+=== Response
+include::{snippets}/post-member-withdraw/response-fields.adoc[]
+

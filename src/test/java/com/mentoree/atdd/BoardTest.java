@@ -24,7 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-@Sql({"/schema.sql", "/setUpData.sql"})
+@Sql({"/schema-test.sql", "/setUpData.sql"})
 public class BoardTest {
 
     @LocalServerPort
