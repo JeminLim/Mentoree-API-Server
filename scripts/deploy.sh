@@ -6,6 +6,11 @@ APP_VERSION"1.0"
 REPOSITORY = /home/ec2-user/app/mentoree-service/zip
 PROJECT_NAME = mentoree-webservice
 
+echo "> build 파일 압축 및 이동"
+zip -r mentoree-webservice *
+mkdir -p deploy
+mv mentoree-webservice.zip deploy/mentoree-webservice.zip
+
 echo "> 현재 실행중인 Docker 컨테이너 pid 확인"
 CURRENT_PID=$(docker container ls -qa)
 
