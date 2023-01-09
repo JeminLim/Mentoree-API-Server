@@ -58,3 +58,15 @@ jasypt:
 files:
   upload:
     path: Users/jeminlim/Desktop/Mentoree/src/main/resources/static/images
+
+cloud:
+  aws:
+    credentials:
+      access-key: ENC(VYG2FSYw7MAyJKLLmT9EeEfiaCzWXUv8Fu924BPCdXU=)
+      secret-key: ENC(bLJ6/rTLwiRqJBzoImN7vZjm9ZJ2CpPiI+hDQ4PdlocepARj4QJLCDW6wG7zQ2I+5HaSYSWtL0Y=)
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+    s3:
+      bucket: mentoree-s3-bucket

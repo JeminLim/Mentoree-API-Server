@@ -1,6 +1,10 @@
 package com.mentoree.config;
 
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.mentoree.config.interceptors.AuthorityInterceptor;
 import com.mentoree.config.utils.AwsS3FileUpload;
 import com.mentoree.config.utils.FileUtils;
@@ -28,7 +32,6 @@ public class WebConfig implements WebMvcConfigurer {
     private final MenteeRepository menteeRepository;
     private final BoardRepository boardRepository;
     private final MissionRepository missionRepository;
-    private final AmazonS3 amazonS3;
     private final Environment environment;
 
     @Override
@@ -52,8 +55,9 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Bean
     public FileUtils fileUtils() {
-        if(Arrays.stream(environment.getActiveProfiles()).anyMatch(env -> env.equalsIgnoreCase("real")))
-            return new AwsS3FileUpload(amazonS3);
+        if(Arrays.stream(environment.getActiveProfiles()).anyMatch(env -> env.equalsIgnoreCase("real"))) {
+            return new AwsS3FileUpload();
+        }
         return new FileUtilsImpl();
     }
 
