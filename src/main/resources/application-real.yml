@@ -19,9 +19,9 @@ spring:
 
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://mentoree-mariadb:3306/mentoree
+    url: jdbc:mariadb://mentoree-mariadb.cs3dyljun5gz.ap-northeast-2.rds.amazonaws.com:3306/mentoreedb
     username: mentoreeAdmin
-    password: ENC(fztun0WeZqcF07Vft490sk1Bd24hpUOq) # 암호화 필요
+    password: ENC(vhnhCPZYHTiDiGbIAx9HQa1OgvttFcyR) # 암호화 필요
 
   sql:
     init:
