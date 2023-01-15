@@ -44,23 +44,7 @@ services:
     volumes:
       - mentoree-persistence:/app/backend/
     environment:
-      - PROFILE=local
+      - PROFILE=real
       - ENCKEY=testkey
     depends_on:
-      - mentoree-mariadb
       - mentoree-redis
-    links:
-      - mentoree-mariadb
-
-  mentoree-mariadb:
-    image: mariadb
-    container_name: mentoree-mariadb
-    restart: always
-    volumes:
-      - mentoree-persistence:/app/mariadb/
-    ports:
-      - "3306:3306"
-    networks:
-      - mentoree-network
-    environment:
-      - MYSQL_ROOT_PASSWORD=dbpassword
