@@ -16,6 +16,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.mock.web.MockPart;
@@ -52,6 +54,9 @@ public class BoardApiControllerTest {
 
     @Autowired
     ObjectMapper objectMapper;
+
+    @Autowired
+    ResourceLoader loader;
 
     @MockBean
     BoardService boardService;
@@ -353,16 +358,15 @@ public class BoardApiControllerTest {
     @DisplayName("게시글 이미지 업로드")
     @WithMockCustomUser
     void uploadImageTest() throws Exception {
-
+        Resource resource = loader.getResource("classpath:/static/images/test.png");
         MockMultipartFile mockFile
                 = new MockMultipartFile("image",
                 "logo.png",
                 "image/png",
-                new FileInputStream("/Users/jeminlim/Desktop/Mentoree_front/src/assets/logo.png"));
+                resource.getInputStream());
 
 
         when(boardService.uploadImages(anyLong(), any())).thenReturn("tempPath");
-
         mockMvc.perform(
                     multipart("/api/boards/{boardId}/images", 1L)
                             .file(mockFile)
