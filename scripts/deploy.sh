@@ -3,7 +3,7 @@
 DOCKER_USER_ID="wer080"
 APP_VERSION="1.0"
 
-WORK_DIR=/home/ec2-user/app/mentoree-webservice/
+WORK_DIR="/home/ec2-user/app/mentoree-webservice/"
 
 echo "> 디렉토리 이동"
 cd $WORK_DIR
