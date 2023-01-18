@@ -1,12 +1,18 @@
 #!/bin/bash
 
 DOCKER_USER_ID="wer080"
+echo "> DOCKER_USER_ID = ${DOCKER_USER_ID}"
+
 APP_VERSION="1.0"
+echo "> APP VERSION = ${APP_VERSION}"
 
 WORK_DIR="/home/ec2-user/app/mentoree-webservice/"
+echo "> WORK_DIR = ${WORK_DIR}"
 
 echo "> 디렉토리 이동"
 cd $WORK_DIR
+pwd
+
 
 echo "> 기존 컨테이너 종료 ..."
 sudo docker stop $(sudo docker ps -qa -f "name=mentoree-backend")
