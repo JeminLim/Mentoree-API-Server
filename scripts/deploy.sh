@@ -1,16 +1,16 @@
 #!/bin/bash
 
 DOCKER_USER_ID="wer080"
-APP_VERSION"1.0"
+APP_VERSION="1.0"
 
-WORK_DIR = /home/ec2-user/app/mentoree-webservice/
+WORK_DIR=/home/ec2-user/app/mentoree-webservice/
 
 echo "> 디렉토리 이동"
 cd $WORK_DIR
 
 echo "> 기존 컨테이너 종료 ..."
-docker stop $(docker ps -qa -f "name=mentoree-backend")
-docker rm $(docker ps -qa -f "name=mentoree-backend")
+sudo docker stop $(sudo docker ps -qa -f "name=mentoree-backend")
+sudo docker rm $(sudo docker ps -qa -f "name=mentoree-backend")
 
 echo "> 기존 이미지 삭제 ..."
 sudo docker rmi ${DOCKER_USER_ID}/mentoree-backend:${APP_VERSION}
