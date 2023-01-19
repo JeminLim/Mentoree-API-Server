@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8081
 
 spring:
   servlet:
@@ -19,9 +19,9 @@ spring:
 
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://mentoree-mariadb.cs3dyljun5gz.ap-northeast-2.rds.amazonaws.com:3306/mentoreedb
+    url: jdbc:mariadb://mentoree-rds.cs3dyljun5gz.ap-northeast-2.rds.amazonaws.com:3306/mentoreedb
     username: mentoreeAdmin
-    password: ENC(vhnhCPZYHTiDiGbIAx9HQa1OgvttFcyR) # 암호화 필요
+    password: ENC(UWv3hEx4cT2Mb6+PeoN0d8r9ZJzdH+wF) # 암호화 필요
 
   sql:
     init:
@@ -63,11 +63,11 @@ encrypt:
 cloud:
   aws:
     credentials:
-      access-key: ENC(VYG2FSYw7MAyJKLLmT9EeEfiaCzWXUv8Fu924BPCdXU=)
-      secret-key: ENC(bLJ6/rTLwiRqJBzoImN7vZjm9ZJ2CpPiI+hDQ4PdlocepARj4QJLCDW6wG7zQ2I+5HaSYSWtL0Y=)
+      access-key: ENC(Ul6Pktj0JrJ4wMMxJYKDZE6GRgx0qlFUNNtJaLVQ8oQ=)
+      secret-key: ENC(FgTc05yVN38ZEwIE+hABh9dzwpT4tP++Smm6QHxWS0MQLWo6CICY+msJJYWBiEpFJKGHBTtHGzA=)
     region:
       static: ap-northeast-2
     stack:
       auto: false
     s3:
-      bucket: mentoree-s3-bucket
+      bucket: cicd-mentoree-s3
