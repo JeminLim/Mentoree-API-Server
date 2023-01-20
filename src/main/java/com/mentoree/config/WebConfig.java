@@ -4,6 +4,7 @@ import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.mentoree.config.interceptors.AuthorityInterceptor;
 import com.mentoree.config.utils.AwsS3FileUpload;
@@ -33,6 +34,7 @@ public class WebConfig implements WebMvcConfigurer {
     private final BoardRepository boardRepository;
     private final MissionRepository missionRepository;
     private final Environment environment;
+    private final AwsS3FileUpload awsS3FileUpload;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -55,9 +57,9 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Bean
     public FileUtils fileUtils() {
-        if(Arrays.stream(environment.getActiveProfiles()).anyMatch(env -> env.equalsIgnoreCase("real"))) {
-            return new AwsS3FileUpload();
-        }
+        if(Arrays.stream(environment.getActiveProfiles()).anyMatch(env -> env.equalsIgnoreCase("real")))
+            return awsS3FileUpload;
+
         return new FileUtilsImpl();
     }
 
