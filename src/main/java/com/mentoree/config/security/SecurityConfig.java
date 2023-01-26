@@ -30,6 +30,7 @@ public class SecurityConfig {
             "/api/reissue",
             "/api/programs/categories",
             "/api/programs/list",
+            "/api/members/join",
             "/api/members/join/**",
             "/images/**",
     };
