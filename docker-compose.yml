@@ -22,19 +22,6 @@ services:
     networks:
       - mentoree-network
 
-  mentoree-front:
-    image: wer080/mentoree-frontend:1.0
-    container_name: mentoree-front
-    platform: linux/amd64
-    ports:
-      - "80:80"
-      - "443:443"
-    restart: always
-    environment:
-      - TZ=Asia/Seoul
-    networks:
-      - mentoree-network
-
   mentoree-backend:
     image: wer080/mentoree-backend:1.0
     container_name: mentoree-backend
