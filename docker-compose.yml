@@ -25,6 +25,7 @@ services:
   mentoree-front:
     image: wer080/mentoree-frontend:1.0
     container_name: mentoree-front
+    platform: linux/amd64
     ports:
       - "80:80"
       - "443:443"

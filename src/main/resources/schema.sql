@@ -37,6 +37,7 @@ CREATE TABLE IF NOT EXISTS program (
     foreign key (category_id) references categories (category_id)
 );
 
+
 CREATE TABLE IF NOT EXISTS mission (
     mission_id bigint not null auto_increment,
     created_date datetime(6),
@@ -145,6 +146,20 @@ CREATE TABLE IF NOT EXISTS hibernate_sequence (
 );
 insert ignore into hibernate_sequence values ( 1 );
 
+-- 이모지 설정
+SET collation_connection = 'utf8mb4_unicode_ci';
+ALTER DATABASE mentoreedb CHARACTER SET utf8bm4 COLLATE utf8mb4_unicode_ci;
+ALTER TABLE categories CONVERT TO CHARACTER SET utf8bm4 COLLATE utf8mb4_unicode_ci;
+ALTER TABLE member CONVERT TO CHARACTER SET utf8bm4 COLLATE utf8mb4_unicode_ci;
+ALTER TABLE program CONVERT TO CHARACTER SET utf8bm4 COLLATE utf8mb4_unicode_ci;
+ALTER TABLE mission CONVERT TO CHARACTER SET utf8bm4 COLLATE utf8mb4_unicode_ci;
+ALTER TABLE applicants CONVERT TO CHARACTER SET utf8bm4 COLLATE utf8mb4_unicode_ci;
+ALTER TABLE board CONVERT TO CHARACTER SET utf8bm4 COLLATE utf8mb4_unicode_ci;
+ALTER TABLE attach_image CONVERT TO CHARACTER SET utf8bm4 COLLATE utf8mb4_unicode_ci;
+ALTER TABLE career CONVERT TO CHARACTER SET utf8bm4 COLLATE utf8mb4_unicode_ci;
+ALTER TABLE mentee CONVERT TO CHARACTER SET utf8bm4 COLLATE utf8mb4_unicode_ci;
+ALTER TABLE mentor CONVERT TO CHARACTER SET utf8bm4 COLLATE utf8mb4_unicode_ci;
+ALTER TABLE reply CONVERT TO CHARACTER SET utf8bm4 COLLATE utf8mb4_unicode_ci;
 
 -- 카테고리 데이터
 insert into categories (created_date, modified_date, category_name, parent_category_id)
