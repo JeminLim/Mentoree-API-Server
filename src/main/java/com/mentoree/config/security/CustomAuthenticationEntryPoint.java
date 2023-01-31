@@ -36,7 +36,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
             setResponse(response, errorResponse);
         }
         else {
-            ErrorResponse denied = ErrorResponse.of(ErrorCode.ACCESS_DENIED, "Access denied");
+            ErrorResponse denied = ErrorResponse.of(ErrorCode.ACCESS_DENIED, authException.getMessage());
             setResponse(response, denied);
         }
     }
