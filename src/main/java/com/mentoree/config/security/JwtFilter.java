@@ -37,7 +37,7 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
-            if (!permitAllURICheck(filterChain, request, response)) {
+            if (!permitAllURICheck(request)) {
                 String accessToken = request.getHeader("Authorization").substring(7);
                 UsernamePasswordAuthenticationToken authentication = getAuthenticationFromToken(accessToken);
 
@@ -69,7 +69,7 @@ public class JwtFilter extends OncePerRequestFilter {
         return authentication;
     }
 
-    private boolean permitAllURICheck(FilterChain filterChain, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private boolean permitAllURICheck(HttpServletRequest request){
         AntPathMatcher pathMatcher = new AntPathMatcher();
         String uri = request.getRequestURI();
         for (String path : permitAllList) {
