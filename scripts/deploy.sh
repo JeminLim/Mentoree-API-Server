@@ -18,5 +18,5 @@ echo "> 이미지 Build ..."
 sudo docker build -t ${DOCKER_USER_ID}/mentoree-backend:${APP_VERSION} .
 
 echo "> Docker compose 파일 실행"
-docker-compose -f docker-compose.yml up -d
+docker-compose -f docker-compose.yml up --scale mentoree-redis-sentinel=3 -d
 
