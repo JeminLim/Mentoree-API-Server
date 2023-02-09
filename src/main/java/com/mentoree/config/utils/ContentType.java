@@ -6,7 +6,10 @@ import lombok.Getter;
 public enum ContentType {
 
     JPEG("jpeg", "image/jpeg"),
+    JPG("jpg", "image/jpg"),
     PNG("png", "image/png"),
+    GIF("gif", "image/gif"),
+
     ;
 
     private String type;
