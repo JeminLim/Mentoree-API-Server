@@ -1,4 +1,4 @@
-package com.mentoree.config.utils;
+package com.mentoree.config.utils.files;
 
 import com.mentoree.api.advice.response.ErrorCode;
 import com.mentoree.exception.FileUploadFailedException;

@@ -1,6 +1,6 @@
 package com.mentoree.service;
 
-import com.mentoree.config.utils.FileUtils;
+import com.mentoree.config.utils.files.FileUtils;
 import com.mentoree.domain.entity.*;
 import com.mentoree.domain.repository.*;
 import com.mentoree.exception.NoDataFoundException;
@@ -95,7 +95,7 @@ public class BoardService {
                 .filePath(path)
                 .originFileName(originFilename)
                 .saveFileName(saveFilename)
-                .mediaType(FilenameUtils.getExtension(originFilename).toLowerCase())
+                .mediaType(FilenameUtils.getExtension(originFilename))
                 .build();
 
         AttachImage attachImage = AttachImage.builder()

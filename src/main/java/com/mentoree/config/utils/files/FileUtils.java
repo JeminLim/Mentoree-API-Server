@@ -1,4 +1,4 @@
-package com.mentoree.config.utils;
+package com.mentoree.config.utils.files;
 
 import org.springframework.web.multipart.MultipartFile;
 
