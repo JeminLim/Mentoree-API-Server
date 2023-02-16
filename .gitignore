@@ -179,3 +179,5 @@ build/**
 *.iml
 *.ConfigEncryption.java
 **/resources/static/images/**/
+application-local.yml
+docker-compose.yml
