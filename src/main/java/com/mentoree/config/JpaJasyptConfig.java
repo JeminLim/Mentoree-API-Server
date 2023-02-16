@@ -17,7 +17,7 @@ import org.springframework.security.core.parameters.P;
 @EnableJpaAuditing
 public class JpaJasyptConfig {
 
-    @Value("${encrypt.key}")
+    @Value("${jasypt.encryptor.password}")
     private String password;
 
     @Bean(name = "jasyptStringEncryptor")
