@@ -53,6 +53,8 @@ spring:
       schema-locations: classpath:schema-test.sql
 
 encrypt:
+  jasypt:
+    key: testkey
   key: ENC(rMJON7kU7wrq0ECPrihtsB7LMogy/v4KMzNjf0Bc+srj2YY5M5BCqfg1va8nYY2w)
 
 jasypt:
@@ -66,8 +68,8 @@ files:
 cloud:
   aws:
     credentials:
-      access-key: ENC(VYG2FSYw7MAyJKLLmT9EeEfiaCzWXUv8Fu924BPCdXU=)
-      secret-key: ENC(bLJ6/rTLwiRqJBzoImN7vZjm9ZJ2CpPiI+hDQ4PdlocepARj4QJLCDW6wG7zQ2I+5HaSYSWtL0Y=)
+      access-key: ENC(XKYOxYcOKDDGAeY4jXAVbg1xadKrXaAv59qWqwRZ1U4=)
+      secret-key: ENC(mOxtMpkZHcxa5kMPxMbZ++HRQ6D9NYKNhU/FHdz6QUo03rhen/HCPkkJNif40a5rsCITUfZNHI8=)
     region:
       static: ap-northeast-2
     stack:

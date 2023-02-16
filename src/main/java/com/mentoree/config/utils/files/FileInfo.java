@@ -3,6 +3,7 @@ package com.mentoree.config.utils.files;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.time.LocalDateTime;
 
 @Getter
@@ -27,7 +28,7 @@ public class FileInfo {
                 .savedFileName(savedFileName)
                 .name(multipartFile.getOriginalFilename())
                 .extension(extension)
-                .path(MultipartUtils.createPath(savedFileName, extension))
+                .path(MultipartUtils.mkdirDateDir() + savedFileName + "." + extension)
                 .size(multipartFile.getSize())
                 .build();
     }

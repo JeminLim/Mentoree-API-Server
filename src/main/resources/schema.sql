@@ -132,7 +132,7 @@ CREATE TABLE IF NOT EXISTS reply (
     reply_id bigint not null auto_increment,
     created_date datetime(6),
     modified_date datetime(6),
-    content varchar(255),
+    content varchar(10000),
     board_id bigint,
     member_id bigint,
     removal bit,

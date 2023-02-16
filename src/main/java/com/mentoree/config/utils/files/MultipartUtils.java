@@ -3,7 +3,9 @@ package com.mentoree.config.utils.files;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.UUID;
+import java.io.File;
+import java.time.LocalDate;
+
 
 public class MultipartUtils {
 
@@ -19,8 +21,31 @@ public class MultipartUtils {
         return null;
     }
 
-    public static String createPath(String savedFileName, String extension) {
-        return String.format("%s/%s.%s", BASE_DIR, savedFileName, extension);
+    public static String mkdirDateDir() {
+        FilePathBuilder pathBuilder = new FilePathBuilder();
+
+        // Home image directory
+        String rootDir = System.getProperty("user.home");
+
+        // Date directory
+        String imageDir = BASE_DIR;
+        String year = String.valueOf(LocalDate.now().getYear());
+        String month = String.valueOf(LocalDate.now().getMonthValue());
+        String day = String.valueOf(LocalDate.now().getDayOfMonth());
+
+        String path = pathBuilder.addPath(imageDir)
+                .addPath(year)
+                .addPath(month)
+                .addPath(day)
+                .build();
+
+        File parentDir = new File(rootDir, path);
+
+        if(!parentDir.exists())
+            parentDir.mkdirs();
+
+        return path;
     }
+
 
 }

@@ -79,3 +79,4 @@ cloud:
       auto: false
     s3:
       bucket: cicd-mentoree-s3
+      dir: /images

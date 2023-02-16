@@ -7,18 +7,18 @@ import com.mentoree.exception.NoDataFoundException;
 import com.mentoree.service.dto.BoardCreateRequestDto;
 import com.mentoree.service.dto.BoardInfoDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BoardService {
@@ -118,13 +118,10 @@ public class BoardService {
     }
 
     private void cleanUpFiles(Board board) {
-        List<AttachImage> dbAttachImage = attachImageRepository.findAllByBoard(board);
-        List<String> contentFilePath = getContentFiles(board.getWriting().getContent());
+        Map<String, List<AttachImage>> separateResult = separateImageList(board);
+        List<AttachImage> confirmImage = separateResult.get("confirm");
+        List<AttachImage> removeImage = separateResult.get("remove");
 
-        List<AttachImage> confirmImage = new ArrayList<>();
-        List<AttachImage> removeImage = new ArrayList<>();
-
-        separateImageList(dbAttachImage, contentFilePath, confirmImage, removeImage);
         board.cleanUpImage(confirmImage);
         cleanUpGarbageFiles(removeImage);
     }
@@ -135,17 +132,28 @@ public class BoardService {
         }
     }
 
-    private void separateImageList(List<AttachImage> dbAttachImage, List<String> contentFilePath, List<AttachImage> confirmImage, List<AttachImage> removeImage) {
+    private Map<String, List<AttachImage>> separateImageList(Board board) {
+        List<AttachImage> dbAttachImage = attachImageRepository.findAllByBoard(board);
+        List<String> contentFilePath = getContentFiles(board.getWriting().getContent());
+
+        List<AttachImage> confirmImage = new ArrayList<>();
+        List<AttachImage> removeImage = new ArrayList<>();
+
         for (AttachImage img : dbAttachImage) {
             boolean flag = false;
             for (String path : contentFilePath) {
-                if(img.getImage().getFilePath().equals(path))
+                if(img.getImage().getFilePath().contains(path))
                     flag = true;
             }
 
             if(flag) confirmImage.add(img);
             else removeImage.add(img);
         }
+
+        Map<String, List<AttachImage>> result = new HashMap<>();
+        result.put("confirm", confirmImage);
+        result.put("remove", removeImage);
+        return result;
     }
     private List<String> getContentFiles(String content) {
         List<String> result = new ArrayList<>();
@@ -154,6 +162,7 @@ public class BoardService {
         Matcher matcher = pattern.matcher(content);
         while(matcher.find()) {
             String find = matcher.group();
+            log.info("find images url = {}", find);
             result.add(find.substring(find.indexOf("/images") + 7, find.length() - 1));
         }
         return result;
