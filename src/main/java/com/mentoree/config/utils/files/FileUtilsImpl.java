@@ -1,4 +1,4 @@
-package com.mentoree.config.utils;
+package com.mentoree.config.utils.files;
 
 import com.mentoree.api.advice.response.ErrorCode;
 import com.mentoree.exception.FileUploadFailedException;
@@ -84,19 +84,5 @@ public class FileUtilsImpl implements FileUtils {
                 .addPath(month)
                 .addPath(day)
                 .build();
-    }
-
-
-    @Getter
-    class FilePathBuilder {
-        String path = File.separator;
-        public FilePathBuilder addPath(String path) {
-            this.path = this.path.concat(path).concat(File.separator);
-            return this;
-        }
-
-        public String build() {
-            return this.path;
-        }
     }
 }

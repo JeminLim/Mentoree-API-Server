@@ -1,5 +1,7 @@
 package com.mentoree.config;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.jasypt.encryption.StringEncryptor;
 import org.jasypt.encryption.pbe.PooledPBEStringEncryptor;
 import org.jasypt.encryption.pbe.config.SimpleStringPBEConfig;
@@ -9,11 +11,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.security.core.parameters.P;
 
+@Getter
+@Setter
 @Configuration
 @EnableJpaAuditing
 public class JpaJasyptConfig {
 
-    @Value("${jasypt.encryptor.password}")
+    @Value("${encrypt.key}")
     private String password;
 
     @Bean(name = "jasyptStringEncryptor")

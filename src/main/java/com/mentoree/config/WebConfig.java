@@ -1,16 +1,10 @@
 package com.mentoree.config;
 
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.regions.Regions;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.mentoree.config.filter.TemporalLoggingFilter;
 import com.mentoree.config.interceptors.AuthorityInterceptor;
-import com.mentoree.config.utils.AwsS3FileUpload;
-import com.mentoree.config.utils.FileUtils;
-import com.mentoree.config.utils.FileUtilsImpl;
+import com.mentoree.config.utils.files.aws.AwsS3FileUpload;
+import com.mentoree.config.utils.files.FileUtils;
+import com.mentoree.config.utils.files.FileUtilsImpl;
 import com.mentoree.domain.repository.BoardRepository;
 import com.mentoree.domain.repository.MenteeRepository;
 import com.mentoree.domain.repository.MentorRepository;

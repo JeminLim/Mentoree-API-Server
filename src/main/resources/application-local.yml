@@ -54,7 +54,6 @@ spring:
             scope:
               - profile
               - email
-
 encrypt:
   key: ENC(rMJON7kU7wrq0ECPrihtsB7LMogy/v4KMzNjf0Bc+srj2YY5M5BCqfg1va8nYY2w)
 

@@ -100,7 +100,9 @@ public class ConfigEncryption {
         return enc.encrypt(value);
     }
 
-
-
-
+    @Test
+    void findImage() {
+        String find = "![866-536x354.jpg](https://cicd-mentoree-s3.s3.ap-northeast-2.amazonaws.com/images/2023/2/14/7433aa8f-e6c2-48c1-abbc-fba701ce42b0.jpg)";
+        System.out.println(find.substring(find.indexOf("/images") + 7, find.length() - 1));
+    }
 }
