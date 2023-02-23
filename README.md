@@ -30,8 +30,11 @@
     
 ---
 ## 사용 기술 스택
-
-
+* Spring Boot 2.7.5
+* MariaDB, AWS RDS
+* JPA
+* 스프링 시큐리티, JWT
+* Java 11
 
 ---
 3. 구현 기능
