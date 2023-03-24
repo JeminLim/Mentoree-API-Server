@@ -9,5 +9,6 @@ import java.util.List;
 public interface CustomProgramRepository {
     Slice<Program> getProgramList(Long minId, String first, List<String> second, Pageable page);
     Slice<Program> getRecentProgramList(Long maxId, String first, List<String> second);
+    Slice<Program> getPrograms(Long minId, Long maxId, String first, List<String> second);
 
 }

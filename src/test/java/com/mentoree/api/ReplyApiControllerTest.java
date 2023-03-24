@@ -37,6 +37,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -60,7 +61,7 @@ public class ReplyApiControllerTest {
     @Test
     @DisplayName("댓글 등록 테스트")
     @WithMockCustomUser
-    void createReplyTest() throws Exception{
+    void createReplyTest() throws Exception {
         ReplyCreateRequestDto createRequest = ReplyCreateRequestDto.builder()
                 .boardId(1L)
                 .content("test reply content").build();
@@ -80,7 +81,8 @@ public class ReplyApiControllerTest {
         mockMvc.perform(
                         post("/api/replies/create")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(requestBody))
+                                .content(requestBody)
+                                .with(csrf()))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("reply.id").value(1L))
                 .andExpect(jsonPath("reply.boardId").value(1L))
@@ -109,7 +111,8 @@ public class ReplyApiControllerTest {
 
     @Test
     @DisplayName("댓글 수정 테스트")
-    void updateReplyTest() throws Exception{
+    @WithMockCustomUser
+    void updateReplyTest() throws Exception {
 
         Map<String, Object> content = new HashMap<>();
         content.put("content", "updated content");
@@ -130,7 +133,8 @@ public class ReplyApiControllerTest {
         mockMvc.perform(
                         patch("/api/replies/update/{replyId}", 1L)
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(requestBody))
+                                .content(requestBody)
+                                .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("reply.content").value("updated content"))
                 .andExpect(jsonPath("reply.isModified").value(true))
@@ -139,7 +143,7 @@ public class ReplyApiControllerTest {
                                 preprocessRequest(prettyPrint()),
                                 preprocessResponse(prettyPrint()),
                                 pathParameters(
-                                  parameterWithName("replyId").description("Reply id wants to update")
+                                        parameterWithName("replyId").description("Reply id wants to update")
                                 ),
                                 requestFields(
                                         fieldWithPath("content").description("Update content")
@@ -160,12 +164,13 @@ public class ReplyApiControllerTest {
 
     @Test
     @DisplayName("댓글 삭제 요청")
+    @WithMockCustomUser
     void deleteReplyTest() throws Exception {
 
         doNothing().when(replyService).remove(anyLong());
 
         mockMvc.perform(
-                        post("/api/replies/remove/{replyId}", 1L)
+                        post("/api/replies/remove/{replyId}", 1L).with(csrf())
                 ).andExpect(status().isOk())
                 .andDo(
                         document("post-replies-remove",
@@ -180,6 +185,7 @@ public class ReplyApiControllerTest {
 
     @Test
     @DisplayName("댓글 리스트 요청")
+    @WithMockCustomUser
     void getReplyListTest() throws Exception {
         ReplyInfoDto expected = ReplyInfoDto.builder()
                 .removal(false)

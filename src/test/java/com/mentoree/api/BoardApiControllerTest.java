@@ -4,12 +4,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mentoree.api.mock.WithMockCustomUser;
 import com.mentoree.config.WebConfig;
 import com.mentoree.config.interceptors.AuthorityInterceptor;
+import com.mentoree.config.security.SecurityConfig;
 import com.mentoree.service.BoardService;
 import com.mentoree.service.dto.BoardCreateRequestDto;
 import com.mentoree.service.dto.BoardInfoDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -20,14 +22,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.mock.web.MockPart;
-import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,11 +34,14 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = BoardApiController.class, excludeFilters = {
-        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {WebConfig.class, AuthorityInterceptor.class})
+@WebMvcTest(controllers = BoardApiController.class,
+        excludeFilters = {
+        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,
+                classes = {WebConfig.class, AuthorityInterceptor.class})
 })
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc(addFilters = false)
@@ -78,7 +76,7 @@ public class BoardApiControllerTest {
         mockMvc.perform(
                         post("/api/boards/create")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(requestBody))
+                                .content(requestBody).with(csrf()))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("boardId").value(1))
                 .andDo(
@@ -114,7 +112,7 @@ public class BoardApiControllerTest {
         mockMvc.perform(
                         post("/api/boards/create/temp")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(requestBody))
+                                .content(requestBody).with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("boardId").value(1))
                 .andDo(
@@ -135,6 +133,7 @@ public class BoardApiControllerTest {
 
     @Test
     @DisplayName("게시글 수정 요청")
+    @WithMockCustomUser
     void BoardUpdateTest() throws Exception {
 
         BoardCreateRequestDto createRequest = BoardCreateRequestDto.builder()
@@ -149,7 +148,7 @@ public class BoardApiControllerTest {
         mockMvc.perform(
                         post("/api/boards/update/{boardId}", 1L)
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(requestBody))
+                                .content(requestBody).with(csrf()))
                 .andExpect(status().isOk())
                 .andDo(
                         document("post-board-update",
@@ -166,12 +165,13 @@ public class BoardApiControllerTest {
 
     @Test
     @DisplayName("게시글 삭제 요청")
+    @WithMockCustomUser
     void BoardDeleteTest() throws Exception {
 
         doNothing().when(boardService).delete(any());
 
         mockMvc.perform(
-                        delete("/api/boards/{boardId}", 1L)
+                        delete("/api/boards/{boardId}", 1L).with(csrf())
                 ).andExpect(status().isOk())
                 .andDo(
                         document("delete-board",
@@ -186,6 +186,7 @@ public class BoardApiControllerTest {
 
     @Test
     @DisplayName("게시글 정보 요청")
+    @WithMockCustomUser
     void getBoardTest() throws Exception {
         BoardInfoDto expected = BoardInfoDto.builder()
                 .id(1L)
@@ -227,6 +228,7 @@ public class BoardApiControllerTest {
 
     @Test
     @DisplayName("게시글 리스트 요청")
+    @WithMockCustomUser
     void getBoardListTest() throws Exception {
         BoardInfoDto expected = BoardInfoDto.builder()
                 .id(1L)
@@ -282,7 +284,7 @@ public class BoardApiControllerTest {
         mockMvc.perform(
                         post("/api/boards/create/temp")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(requestBody))
+                                .content(requestBody).with(csrf()))
                 .andExpect(status().isOk())
                 .andDo(
                         document("post-board-create-temp",
@@ -369,7 +371,7 @@ public class BoardApiControllerTest {
         when(boardService.uploadImages(anyLong(), any())).thenReturn("tempPath");
         mockMvc.perform(
                     multipart("/api/boards/{boardId}/images", 1L)
-                            .file(mockFile)
+                            .file(mockFile).with(csrf())
                 ).andExpect(status().isOk())
                 .andExpect(jsonPath("path").value("tempPath"))
                 .andExpect(jsonPath("filename").value("logo.png"))

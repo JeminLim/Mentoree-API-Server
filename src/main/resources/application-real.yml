@@ -16,14 +16,14 @@ spring:
 
   redis:
     port: 6379
-    password: 1234qwer
+    password: 1234qwer # 암호화 필요
     sentinel:
       master: mymaster
       nodes:
         - 172.18.0.1:15001
         - 172.18.0.1:15002
         - 172.18.0.1:15003
-      password: 1234qwer
+      password: 1234qwer # 암호화 필요
 
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver

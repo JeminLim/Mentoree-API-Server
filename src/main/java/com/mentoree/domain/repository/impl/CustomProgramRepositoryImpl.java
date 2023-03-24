@@ -52,6 +52,22 @@ public class CustomProgramRepositoryImpl implements CustomProgramRepository {
         return RepositoryHelper.toSlice(queryResult, page);
     }
 
+    @Override
+    public Slice<Program> getPrograms(Long minId, Long maxId, String first, List<String> second) {
+        Pageable page = PageRequest.of(0, 8);
+        List<Program> queryResult = queryFactory.selectFrom(program)
+                .where(openProgram(),
+                        program.id.gt(maxId),
+                        program.id.lt(minId),
+                        matchFirstCategory(first),
+                        matchSecondCategory(second))
+                .orderBy(program.id.desc())
+                .limit(page.getPageSize() + 1)
+                .offset(page.getOffset())
+                .fetch();
+        return RepositoryHelper.toSlice(queryResult, page);
+    }
+
     private BooleanExpression ltProgramId(Long minId) {
         return minId == 0 ? null : program.id.lt(minId);
     }
