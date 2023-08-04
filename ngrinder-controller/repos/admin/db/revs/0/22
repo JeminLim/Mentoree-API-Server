@@ -1,0 +1,47 @@
+PLAIN
+K 11
+targetHosts
+V 0
+
+K 9
+validated
+V 5
+false
+END
+ENDREP
+id: 0-20.0.r22/63
+type: file
+pred: 0-20.0.r21/400
+count: 2
+text: 21 0 315 3846 3711afee9b12aea56371d017c6ba26fe 13e2d057fdcb85829f5fc7dbd10ce8f83a4ed982 21-l/_1
+props: 22 0 50 50 9451ec6176239ace09c05a5d0190e9e9
+cpath: /mentoree_scenario_1.groovy
+copyroot: 0 /
+
+PLAIN
+K 14
+.gitconfig.yml
+V 17
+file 0-1.0.r1/346
+K 26
+mentoree_api_test_1.groovy
+V 19
+file 0-16.0.r19/131
+K 26
+mentoree_scenario_1.groovy
+V 18
+file 0-20.0.r22/63
+END
+ENDREP
+id: 0.0.r22/498
+type: dir
+pred: 0.0.r21/839
+count: 22
+text: 22 325 160 160 74140eb3b7bcc5b7935cd48c25b11a26
+cpath: /
+copyroot: 0 /
+
+0-20.0.t21-l modify-file true true /mentoree_scenario_1.groovy
+
+
+498 630

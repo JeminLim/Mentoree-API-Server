@@ -37,6 +37,7 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -83,7 +84,8 @@ public class ProgramApiControllerTest {
         mockMvc.perform(
                         post("/api/programs/create")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(requestBody))
+                                .content(requestBody)
+                                .with(csrf()))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("mentor.memberId").value(1L))
                 .andExpect(jsonPath("mentor.programId").value(1L))
@@ -115,6 +117,7 @@ public class ProgramApiControllerTest {
 
     @Test
     @DisplayName("프로그램 수정 요청")
+    @WithMockCustomUser
     void ProgramUpdateTest() throws Exception {
         //given
         ProgramCreateRequestDto updateRequest = ProgramCreateRequestDto.builder()
@@ -148,7 +151,8 @@ public class ProgramApiControllerTest {
         mockMvc.perform(
                         post("/api/programs/update/{programId}", 1L)
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(requestBody))
+                                .content(requestBody)
+                                .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("program.programName").value("newProgram"))
                 .andExpect(jsonPath("program.mentorList.size()").value(1))
@@ -202,7 +206,8 @@ public class ProgramApiControllerTest {
         mockMvc.perform(
                         post("/api/programs/apply")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(requestBody))
+                                .content(requestBody)
+                                .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("result").value("success"))
                 .andDo(
@@ -224,6 +229,7 @@ public class ProgramApiControllerTest {
 
     @Test
     @DisplayName("프로그램 신청자 목록 요청")
+    @WithMockCustomUser
     void getApplicantsTest() throws Exception {
         Member member = Member.builder()
                 .email("test@email.com")
@@ -276,12 +282,14 @@ public class ProgramApiControllerTest {
 
     @Test
     @DisplayName("프로그램 참가 신청 승인")
+    @WithMockCustomUser
     void acceptApplicantTest() throws Exception {
 
         doNothing().when(programService).acceptApplicant(anyLong());
 
         mockMvc.perform(
-                        post("/api/programs/{programId}/applicants/accept/{applicantId}", 1L, 1L))
+                        post("/api/programs/{programId}/applicants/accept/{applicantId}", 1L, 1L)
+                                .with(csrf()))
                 .andExpect(status().isOk())
                 .andDo(
                         document("post-program-applicant-accept",
@@ -297,12 +305,14 @@ public class ProgramApiControllerTest {
 
     @Test
     @DisplayName("프로그램 참가 신청 거절")
+    @WithMockCustomUser
     void rejectApplicantTest() throws Exception {
 
         doNothing().when(programService).rejectApplicant(anyLong());
 
         mockMvc.perform(
-                        delete("/api/programs/{programId}/applicants/reject/{applicantId}", 1L, 1L))
+                        delete("/api/programs/{programId}/applicants/reject/{applicantId}", 1L, 1L)
+                                .with(csrf()))
                 .andExpect(status().isOk())
                 .andDo(
                         document("delete-program-applicant-reject",
@@ -318,6 +328,7 @@ public class ProgramApiControllerTest {
 
     @Test
     @DisplayName("프로그램 정보 열람")
+    @WithMockCustomUser
     void getProgramInfoTest() throws Exception {
         Member member = builder.generateMember("memberA", UserRole.MENTOR);
         Category category = builder.generateCategory("Programming", "JAVA");
@@ -363,12 +374,13 @@ public class ProgramApiControllerTest {
 
     @Test
     @DisplayName("프로그램 중도 폐지 신청")
+    @WithMockCustomUser
     void withdrawProgramTest() throws Exception {
 
         doNothing().when(programService).withdrawProgram(anyLong());
 
         mockMvc.perform(
-                        post("/api/programs/withdraw/{programId}", 1L))
+                        post("/api/programs/withdraw/{programId}", 1L).with(csrf()))
                 .andExpect(status().isOk())
                 .andDo(
                         document("post-program-withdraw",
@@ -383,6 +395,7 @@ public class ProgramApiControllerTest {
 
     @Test
     @DisplayName("프로그램 리스트 요청 - 전체")
+    @WithMockCustomUser
     void getProgramListNoFilter() throws Exception {
 
         List<Program> dummyPrograms = generateProgramList();
@@ -392,7 +405,8 @@ public class ProgramApiControllerTest {
         expected.put("programList", infoDtos);
         expected.put("next", true);
 
-        when(programService.getProgramList(any(), any(), any(), any())).thenReturn(expected);
+//        when(programService.getProgramList(any(), any(), any(), any())).thenReturn(expected);
+        when(programService.getProgramDtoList(any(), any(), any(), any())).thenReturn(expected);
 
         mockMvc.perform(
                     get("/api/programs/list")
@@ -435,6 +449,7 @@ public class ProgramApiControllerTest {
 
     @Test
     @DisplayName("프로그램 리스트 요청 - 대분류")
+    @WithMockCustomUser
     void getProgramListFirstFilter() throws Exception {
 
         List<Program> dummyPrograms = generateProgramList();
@@ -446,7 +461,8 @@ public class ProgramApiControllerTest {
         expected.put("programList", infoDtos);
         expected.put("next", true);
 
-        when(programService.getProgramList(any(), any(),any(),any())).thenReturn(expected);
+//        when(programService.getProgramList(any(), any(),any(),any())).thenReturn(expected);
+        when(programService.getProgramDtoList(any(), any(),any(),any())).thenReturn(expected);
 
         mockMvc.perform(
                         get("/api/programs/list")
@@ -489,6 +505,7 @@ public class ProgramApiControllerTest {
 
     @Test
     @DisplayName("프로그램 리스트 요청 - 소분류")
+    @WithMockCustomUser
     void getProgramListSecondFilter() throws Exception {
 
         List<Program> dummyPrograms = generateProgramList();
@@ -499,7 +516,8 @@ public class ProgramApiControllerTest {
         expected.put("programList", infoDtos);
         expected.put("next", true);
 
-        when(programService.getProgramList(any(), any(), any(), any())).thenReturn(expected);
+//        when(programService.getProgramList(any(), any(), any(), any())).thenReturn(expected);
+        when(programService.getProgramDtoList(any(), any(), any(), any())).thenReturn(expected);
 
         mockMvc.perform(
                         get("/api/programs/list")

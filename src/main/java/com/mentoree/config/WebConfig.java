@@ -60,7 +60,6 @@ public class WebConfig implements WebMvcConfigurer {
     public FileUtils fileUtils() {
         if(Arrays.stream(environment.getActiveProfiles()).anyMatch(env -> env.equalsIgnoreCase("real")))
             return awsS3FileUpload;
-
         return new FileUtilsImpl();
     }
 

@@ -4,6 +4,7 @@ import com.mentoree.domain.entity.Category;
 import com.mentoree.domain.entity.Program;
 import com.mentoree.domain.repository.CategoryRepository;
 import com.mentoree.domain.repository.ProgramRepository;
+import com.mentoree.service.dto.ProgramInfoDto;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
@@ -156,18 +157,21 @@ public class ProgramRepositoryTest {
         Long minId = recentProgram.getContent().get(recentProgram.getContent().size() - 1).getId();
         Slice<Program> programList = programRepository.getProgramList( minId,"Programming", List.of("JAVA"), page);
 
-        for (Program program : recentProgram) {
-            log.info("program id = {} " , program.getId());
-        }
-        for (Program program : programList) {
-            log.info("program id = {} " , program.getId());
-        }
-
-
-
         assertThat(recentProgram.getContent().size()).isEqualTo(1);
         assertThat(programList.getContent().size()).isEqualTo(7);
 
+    }
+
+    @Test
+    @DisplayName("프로그램 필터링 테스트- 소분류")
+    void getJavaProgramList_v2() {
+        Slice<ProgramInfoDto> recentProgram = programRepository.getRecentProgramDtoList(95L, "Programming", List.of("JAVA"));
+        Long minId = recentProgram.getContent().get(recentProgram.getContent().size() - 1).getId();
+        Pageable page = PageRequest.of(0, 8 - recentProgram.getContent().size());
+        Slice<ProgramInfoDto> programList = programRepository.getProgramDtoList( minId,"Programming", List.of("JAVA"), page);
+
+        assertThat(recentProgram.getContent().size()).isEqualTo(1);
+        assertThat(programList.getContent().size()).isEqualTo(7);
     }
 
 }

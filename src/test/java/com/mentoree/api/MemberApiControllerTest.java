@@ -1,6 +1,7 @@
 package com.mentoree.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mentoree.api.mock.WithMockCustomUser;
 import com.mentoree.config.WebConfig;
 import com.mentoree.config.interceptors.AuthorityInterceptor;
 import com.mentoree.config.security.JwtFilter;
@@ -23,6 +24,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
@@ -38,6 +40,7 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = MemberApiController.class, excludeFilters = {
@@ -57,6 +60,7 @@ public class MemberApiControllerTest {
 
     @Test
     @DisplayName("이메일 중복 체크")
+    @WithMockCustomUser
     void duplicateEmailCheck() throws Exception {
         //given
         String testEmail = "memberA@email.com";
@@ -84,6 +88,7 @@ public class MemberApiControllerTest {
 
     @Test
     @DisplayName("닉네임 중복 체크")
+    @WithMockCustomUser
     void duplicateNicknameCheck() throws Exception {
         //given
         String testNickname = "memberA";
@@ -112,6 +117,7 @@ public class MemberApiControllerTest {
 
     @Test
     @DisplayName("회원 가입")
+    @WithMockCustomUser
     void singUpTest() throws Exception {
 
         MemberSignUpRequestDto signUpRequest = MemberSignUpRequestDto.builder()
@@ -123,7 +129,7 @@ public class MemberApiControllerTest {
         doNothing().when(memberService).signUp(any());
 
         mockMvc.perform(
-                        post("/api/members/join")
+                        post("/api/members/join").with(csrf())
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(signUpRequest))
                 ).andExpect(status().isCreated())
@@ -142,6 +148,7 @@ public class MemberApiControllerTest {
 
     @Test
     @DisplayName("멤버 정보 열람")
+    @WithMockCustomUser
     void getProfileTest() throws Exception {
 
         MemberProfileDto memberProfileDto = MemberProfileDto.builder().id(1L)
@@ -185,6 +192,7 @@ public class MemberApiControllerTest {
 
     @Test
     @DisplayName("프로필 정보 업데이트")
+    @WithMockCustomUser
     void updateProfileTest() throws Exception {
 
         MemberProfileDto memberProfileDto = MemberProfileDto.builder()
@@ -203,7 +211,7 @@ public class MemberApiControllerTest {
         mockMvc.perform(
                         post("/api/members/profiles")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
+                        .content(requestBody).with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("member.id").value(1L))
                 .andExpect(jsonPath("member.nickname").value(memberProfileDto.getNickname()))
@@ -239,6 +247,7 @@ public class MemberApiControllerTest {
 
     @Test
     @DisplayName("멘토 회원 전환 요청")
+    @WithMockCustomUser
     void memberTransformTest() throws Exception {
 
         MemberProfileDto memberProfileDto = MemberProfileDto.builder()
@@ -257,7 +266,7 @@ public class MemberApiControllerTest {
         mockMvc.perform(
                         post("/api/members/transform")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(requestBody))
+                                .content(requestBody).with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("result").value("success"))
                 .andDo(
@@ -283,12 +292,13 @@ public class MemberApiControllerTest {
 
     @Test
     @DisplayName("회원 탈퇴 요청")
+    @WithMockCustomUser
     void WithdrawTest() throws Exception {
 
         doNothing().when(memberService).withdrawMember(any());
 
         mockMvc.perform(
-                        post("/api/members/withdraw/{id}", 1L))
+                        post("/api/members/withdraw/{id}", 1L).with(csrf()))
                 .andExpect(status().isOk())
                 .andDo(
                         document("post-member-withdraw",

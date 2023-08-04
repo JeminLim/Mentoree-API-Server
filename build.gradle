@@ -37,6 +37,9 @@ dependencies {
 	//devtool
 	implementation 'org.springframework.boot:spring-boot-devtools:2.7.6'
 
+	// spring cache
+	implementation 'org.springframework.boot:spring-boot-starter-cache'
+
 	//QueryDSL
 	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
 	annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}"
