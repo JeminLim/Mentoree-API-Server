@@ -53,8 +53,8 @@ CREATE TABLE IF NOT EXISTS mission (
 );
 
 CREATE TABLE IF NOT EXISTS applicants (
-    applicant_id bigint not null auto_increment,
-    created_date datetime(6),
+                                          applicant_id bigint not null auto_increment,
+                                          created_date datetime(6),
     modified_date datetime(6),
     approval bit,
     message varchar(1000),
@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS applicants (
     primary key (applicant_id),
     foreign key (member_id) references member (member_id),
     foreign key (program_id) references program (program_id)
-);
+    );
 
 CREATE TABLE IF NOT EXISTS board (
     board_id bigint not null auto_increment,
@@ -117,8 +117,8 @@ CREATE TABLE IF NOT EXISTS  mentee (
 );
 
 CREATE TABLE IF NOT EXISTS  mentor (
-    mentor_id bigint not null auto_increment,
-    created_date datetime(6),
+                                       mentor_id bigint not null auto_increment,
+                                       created_date datetime(6),
     modified_date datetime(6),
     host bit,
     member_id bigint,
@@ -126,7 +126,7 @@ CREATE TABLE IF NOT EXISTS  mentor (
     primary key (mentor_id),
     foreign key (member_id) references member (member_id),
     foreign key (program_id) references program (program_id)
-);
+    );
 
 CREATE TABLE IF NOT EXISTS reply (
     reply_id bigint not null auto_increment,
@@ -171,6 +171,10 @@ select now(), now(), 'Music', null
 from DUAL where not exists(select * from categories where category_name = 'Music');
 
 insert into categories (created_date, modified_date, category_name, parent_category_id)
+select now(), now(), 'Creative', null
+from DUAL where not exists(select * from categories where category_name = 'Creative');
+
+insert into categories (created_date, modified_date, category_name, parent_category_id)
 select now(), now(), 'JAVA', 1
 from DUAL where not exists(select * from categories where category_name = 'JAVA');
 
@@ -179,8 +183,68 @@ select now(), now(), 'PYTHON', 1
 from DUAL where not exists(select * from categories where category_name = 'PYTHON');
 
 insert into categories (created_date, modified_date, category_name, parent_category_id)
+select now(), now(), 'C/C++', 1
+from DUAL where not exists(select * from categories where category_name = 'C/C++');
+
+insert into categories (created_date, modified_date, category_name, parent_category_id)
+select now(), now(), 'JavaScript', 1
+from DUAL where not exists(select * from categories where category_name = 'JavaScript');
+
+insert into categories (created_date, modified_date, category_name, parent_category_id)
+select now(), now(), 'C#', 1
+from DUAL where not exists(select * from categories where category_name = 'C#');
+
+insert into categories (created_date, modified_date, category_name, parent_category_id)
+select now(), now(), 'Ruby', 1
+from DUAL where not exists(select * from categories where category_name = 'Ruby');
+
+insert into categories (created_date, modified_date, category_name, parent_category_id)
+select now(), now(), 'Go', 1
+from DUAL where not exists(select * from categories where category_name = 'Go');
+
+insert into categories (created_date, modified_date, category_name, parent_category_id)
 select now(), now(), 'GUITAR', 2
 from DUAL where not exists(select * from categories where category_name = 'GUITAR');
+
+insert into categories (created_date, modified_date, category_name, parent_category_id)
+select now(), now(), 'PIANO', 2
+from DUAL where not exists(select * from categories where category_name = 'PIANO');
+
+insert into categories (created_date, modified_date, category_name, parent_category_id)
+select now(), now(), 'DRUM', 2
+from DUAL where not exists(select * from categories where category_name = 'DRUM');
+
+insert into categories (created_date, modified_date, category_name, parent_category_id)
+select now(), now(), 'VOCAL', 2
+from DUAL where not exists(select * from categories where category_name = 'VOCAL');
+
+insert into categories (created_date, modified_date, category_name, parent_category_id)
+select now(), now(), 'SAXOPHONE', 2
+from DUAL where not exists(select * from categories where category_name = 'SAXOPHONE');
+
+insert into categories (created_date, modified_date, category_name, parent_category_id)
+select now(), now(), 'KALIMBA', 2
+from DUAL where not exists(select * from categories where category_name = 'KALIMBA');
+
+insert into categories (created_date, modified_date, category_name, parent_category_id)
+select now(), now(), 'HARMONICA', 2
+from DUAL where not exists(select * from categories where category_name = 'HARMONICA');
+
+insert into categories (created_date, modified_date, category_name, parent_category_id)
+select now(), now(), 'UX/UI', 3
+from DUAL where not exists(select * from categories where category_name = 'UX/UI');
+
+insert into categories (created_date, modified_date, category_name, parent_category_id)
+select now(), now(), 'GRAPHIC', 3
+from DUAL where not exists(select * from categories where category_name = 'GRAPHIC');
+
+insert into categories (created_date, modified_date, category_name, parent_category_id)
+select now(), now(), 'EDITING', 3
+from DUAL where not exists(select * from categories where category_name = 'EDITING');
+
+insert into categories (created_date, modified_date, category_name, parent_category_id)
+select now(), now(), 'SOUNDS', 3
+from DUAL where not exists(select * from categories where category_name = 'SOUNDS');
 
 insert into member (created_date, modified_date, email, nickname, o_auth_id, member_role, user_password, username, withdrawal)
 select now(), now(), 'tester@email.com', 'testerNickname', 'FORM', 'MENTOR', '{bcrypt}$2a$10$PAeTU0ut57vvZsZLJG4RKeSqUUMEuSlhloXXpeRT4avZmoVHTlDcq', 'memberA', false

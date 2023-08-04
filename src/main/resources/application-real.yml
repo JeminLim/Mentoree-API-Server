@@ -59,8 +59,8 @@ spring:
       client:
         registration:
           google:
-            client-id: client-id #google client id
-            client-secret: client-secret  #암호화 필요
+            client-id: 652563865976-34g11qkjpf0alptlvvnemd5vqc4vk9bt.apps.googleusercontent.com #google client id
+            client-secret: ENC(9SjxFw6AzOopVdigD1dJRGEi1K6L9S7DIgxvPkLwVkPpqKR0WnG8cF2FT1Gfl1RH)  #암호화 필요
             scope:
               - profile
               - email

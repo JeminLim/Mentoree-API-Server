@@ -37,6 +37,9 @@ dependencies {
 	//devtool
 	implementation 'org.springframework.boot:spring-boot-devtools:2.7.6'
 
+	// spring cache
+	implementation 'org.springframework.boot:spring-boot-starter-cache'
+
 	//QueryDSL
 	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
 	annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}"
@@ -74,8 +77,6 @@ dependencies {
 
 	//aws
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
-	//aws sns
-	implementation 'org.springframework.cloud:spring-cloud-aws-messaging:2.2.6.RELEASE'
 
 	compileOnly 'org.projectlombok:lombok'
 	testCompileOnly 'org.projectlombok:lombok'

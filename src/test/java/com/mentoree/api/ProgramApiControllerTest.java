@@ -405,7 +405,8 @@ public class ProgramApiControllerTest {
         expected.put("programList", infoDtos);
         expected.put("next", true);
 
-        when(programService.getProgramList(any(), any(), any(), any())).thenReturn(expected);
+//        when(programService.getProgramList(any(), any(), any(), any())).thenReturn(expected);
+        when(programService.getProgramDtoList(any(), any(), any(), any())).thenReturn(expected);
 
         mockMvc.perform(
                     get("/api/programs/list")
@@ -460,7 +461,8 @@ public class ProgramApiControllerTest {
         expected.put("programList", infoDtos);
         expected.put("next", true);
 
-        when(programService.getProgramList(any(), any(),any(),any())).thenReturn(expected);
+//        when(programService.getProgramList(any(), any(),any(),any())).thenReturn(expected);
+        when(programService.getProgramDtoList(any(), any(),any(),any())).thenReturn(expected);
 
         mockMvc.perform(
                         get("/api/programs/list")
@@ -514,7 +516,8 @@ public class ProgramApiControllerTest {
         expected.put("programList", infoDtos);
         expected.put("next", true);
 
-        when(programService.getProgramList(any(), any(), any(), any())).thenReturn(expected);
+//        when(programService.getProgramList(any(), any(), any(), any())).thenReturn(expected);
+        when(programService.getProgramDtoList(any(), any(), any(), any())).thenReturn(expected);
 
         mockMvc.perform(
                         get("/api/programs/list")

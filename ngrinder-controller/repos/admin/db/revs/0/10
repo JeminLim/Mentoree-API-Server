@@ -1,0 +1,23 @@
+PLAIN
+K 14
+.gitconfig.yml
+V 17
+file 0-1.0.r1/346
+K 21
+mentotree_test.groovy
+V 17
+file 0-7.0.r9/505
+END
+ENDREP
+id: 0.0.r10/110
+type: dir
+pred: 0.0.r9/907
+count: 10
+text: 10 0 97 97 7de64018215d18713b5010a25bb04bce
+cpath: /
+copyroot: 0 /
+
+0-8.0.r8/59 delete-file false false /test.groovy
+
+
+110 237
