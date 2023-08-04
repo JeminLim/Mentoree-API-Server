@@ -113,14 +113,13 @@ public class ProgramApiController {
                                         @RequestParam(value = "minId") Long minId,
                                         @RequestParam(value = "first") String firstCategory,
                                         @RequestParam(value = "second") String secondCategory) {
-        System.out.println(secondCategory);
-
         firstCategory = firstCategory.isEmpty() ? null : firstCategory;
         List<String> secondCategories = secondCategory.isEmpty() ? null : List.of(secondCategory.split(","));
 
+//        Map<String, Object> responseBody = programService.getProgramList(minId, maxId, firstCategory, secondCategories);
 
+        Map<String, Object> responseBody = programService.getProgramDtoList(minId, maxId, firstCategory, secondCategories);
 
-        Map<String, Object> responseBody = programService.getProgramList(minId, maxId, firstCategory, secondCategories);
         return ResponseEntity.ok().body(responseBody);
     }
 

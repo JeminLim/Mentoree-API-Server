@@ -32,6 +32,7 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -69,7 +70,8 @@ public class MissionApiControllerTest {
         mockMvc.perform(
                         post("/api/missions/create")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(requestBody))
+                                .content(requestBody)
+                                .with(csrf()))
                 .andExpect(status().isCreated())
                 .andDo(
                         document("post-missions-create",
@@ -87,6 +89,7 @@ public class MissionApiControllerTest {
 
     @Test
     @DisplayName("미션 수정 요청")
+    @WithMockCustomUser
     void MissionUpdateTest() throws Exception {
 
         MissionCreateRequestDto createRequest = MissionCreateRequestDto.builder()
@@ -102,7 +105,8 @@ public class MissionApiControllerTest {
         mockMvc.perform(
                         post("/api/missions/update/{missionId}", 1L)
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(requestBody))
+                                .content(requestBody)
+                                .with(csrf()))
                 .andExpect(status().isOk())
                 .andDo(
                         document("post-missions-update",
@@ -123,12 +127,13 @@ public class MissionApiControllerTest {
 
     @Test
     @DisplayName("미션 삭제 요청")
+    @WithMockCustomUser
     void MissionDeleteTest() throws Exception {
 
         doNothing().when(missionService).delete(any());
 
         mockMvc.perform(
-                delete("/api/missions/{missionId}", 1L)
+                    delete("/api/missions/{missionId}", 1L).with(csrf())
                 ).andExpect(status().isOk())
                 .andDo(
                         document("delete-missions",
@@ -143,6 +148,7 @@ public class MissionApiControllerTest {
 
     @Test
     @DisplayName("미션 정보 요청")
+    @WithMockCustomUser
     void getMissionInfoTest() throws Exception {
         MissionInfoDto expected = MissionInfoDto.builder()
                 .id(1L)
@@ -183,6 +189,7 @@ public class MissionApiControllerTest {
 
     @Test
     @DisplayName("미션 리스트 요청")
+    @WithMockCustomUser
     void getMissionListTest() throws Exception {
         MissionInfoDto expected = MissionInfoDto.builder()
                 .id(1L)

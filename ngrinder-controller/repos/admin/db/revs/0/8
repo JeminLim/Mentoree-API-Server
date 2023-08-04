@@ -1,0 +1,46 @@
+PLAIN
+K 11
+targetHosts
+V 0
+
+K 9
+validated
+V 1
+0
+END
+ENDREP
+id: 0-8.0.r8/59
+type: file
+count: 0
+text: 2 0 909 2253 9e5e43b7bfb9d1d59bc50deed7e70783 0aa273e19f83355d35b9e38d2452bb358cb74260 7-7/_2
+props: 8 0 46 46 536bcf2a8ad0af566c24c817dde35b51
+cpath: /test.groovy
+copyroot: 0 /
+
+PLAIN
+K 14
+.gitconfig.yml
+V 17
+file 0-1.0.r1/346
+K 21
+mentotree_test.groovy
+V 17
+file 0-7.0.r7/976
+K 11
+test.groovy
+V 16
+file 0-8.0.r8/59
+END
+ENDREP
+id: 0.0.r8/429
+type: dir
+pred: 0.0.r7/1320
+count: 8
+text: 8 280 136 136 d6a14f257756f977dd7d6f3e74cc195b
+cpath: /
+copyroot: 0 /
+
+_0.0.t7-7 add-file true true /test.groovy
+
+
+429 558

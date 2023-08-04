@@ -1,0 +1,19 @@
+PLAIN
+K 14
+.gitconfig.yml
+V 17
+file 0-1.0.r1/346
+END
+ENDREP
+id: 0.0.r6/60
+type: dir
+pred: 0.0.r5/1306
+count: 6
+text: 6 0 47 47 ba20ce70b9a2c710fb69438a9136e4ab
+cpath: /
+copyroot: 0 /
+
+0-5.0.r5/964 delete-file false false /mentoree-test.groovy
+
+
+60 184

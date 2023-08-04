@@ -1,11 +1,14 @@
 package com.mentoree.service;
 
+import com.mentoree.config.aop.TimeCheck;
 import com.mentoree.domain.entity.*;
 import com.mentoree.domain.repository.*;
 import com.mentoree.exception.DuplicateDataException;
 import com.mentoree.exception.NoDataFoundException;
 import com.mentoree.service.dto.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -17,6 +20,7 @@ import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ProgramService {
     private final int PAGE_SIZE = 8;
     private final MemberRepository memberRepository;
@@ -118,6 +122,7 @@ public class ProgramService {
         program.withdraw();
     }
 
+    @TimeCheck
     @Transactional(readOnly = true)
     public Map<String, Object> getProgramList(Long minId, Long maxId, String first, List<String> second) {
         Slice<Program> recentProgramList = programRepository.getRecentProgramList(maxId, first, second);
@@ -125,7 +130,16 @@ public class ProgramService {
         return data;
     }
 
+    @TimeCheck
     @Transactional(readOnly = true)
+    public Map<String, Object> getProgramDtoList(Long minId, Long maxId, String first, List<String> second) {
+        Slice<ProgramInfoDto> recentProgramDtoList = programRepository.getRecentProgramDtoList(maxId, first, second);
+        Map<String, Object> data = supplementProgramDtoList(minId, first, second, recentProgramDtoList);
+        return data;
+    }
+
+    @Transactional(readOnly = true)
+    @Cacheable(value = "categories", unless = "#result == null")
     public Map<String, Object> getCategoryList() {
         Map<String, Object> result = new HashMap<>();
         List<Category> allCategoryList = categoryRepository.findAll();
@@ -141,6 +155,7 @@ public class ProgramService {
         result.put("secondCategories", secondCategory);
         return result;
     }
+
 
     private Map<String, Object> supplementProgramList(Long minId, String first, List<String> second, Slice<Program> programListSlice) {
         List<Program> programList = programListSlice.getContent().isEmpty() ? new ArrayList<>() : programListSlice.getContent();
@@ -163,6 +178,29 @@ public class ProgramService {
         List<ProgramInfoDto> resultList = programList.stream().map(ProgramInfoDto::of).collect(Collectors.toList());
         Map<String, Object> result = new HashMap<>();
         result.put("programList", resultList);
+        result.put("next", hasNext);
+        return result;
+    }
+    private Map<String, Object> supplementProgramDtoList(Long minId, String first, List<String> second, Slice<ProgramInfoDto> recentProgramDtoList) {
+        List<ProgramInfoDto> programList = recentProgramDtoList.getContent().isEmpty() ? new ArrayList<>() : recentProgramDtoList.getContent();
+        boolean hasNext = recentProgramDtoList.hasNext();
+
+        if(programList.size() < PAGE_SIZE) {
+            if(minId == 0 && programList.size() > 0) {
+                minId = programList.get(programList.size() - 1).getId();
+            }
+
+            PageRequest page = PageRequest.of(0, PAGE_SIZE - programList.size());
+            Slice<ProgramInfoDto> supplementList = programRepository.getProgramDtoList(minId, first, second, page);
+
+            if(!supplementList.isEmpty()) {
+                programList.addAll(supplementList.getContent());
+                hasNext = supplementList.hasNext();
+            }
+        }
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("programList", programList);
         result.put("next", hasNext);
         return result;
     }
