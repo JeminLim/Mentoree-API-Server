@@ -183,5 +183,7 @@ build/**
 **/resources/static/images/**/
 application-local.yml
 docker-compose.yml
+docker-compose-local.yml
+docker-compose-ngrinder.yml
 
 !gradle/wrapper/gradle-wrapper.jar

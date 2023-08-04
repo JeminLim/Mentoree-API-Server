@@ -1,0 +1,97 @@
+version: "3"
+
+networks:
+  mentoree-network:
+    driver: bridge
+    external: true
+
+volumes:
+  mentoree-persistence:
+    external: true
+
+services:
+  mentoree-redis-master:
+    image: 'bitnami/redis:6.2.10'
+    container_name: mentoree-redis-master
+    environment:
+      - REDIS_REPLICATION_MODE=master
+      - REDIS_PASSWORD=1234qwer
+    ports:
+      - '6379:6379'
+    networks:
+      - mentoree-network
+
+  mentoree-redis-slave-1:
+    image: 'bitnami/redis:6.2.10'
+    container_name: mentoree-redis-slave-1
+    environment:
+      - REDIS_REPLICATION_MODE=slave
+      - REDIS_MASTER_HOST=mentoree-redis-master
+      - REDIS_MASTER_PASSWORD=1234qwer
+      - REDIS_PASSWORD=1234qwer
+    ports:
+      - '6380:6379'
+    networks:
+      - mentoree-network
+    depends_on:
+      - mentoree-redis-master
+
+  mentoree-redis-slave-2:
+    image: 'bitnami/redis:6.2.10'
+    container_name: mentoree-redis-slave-2
+    environment:
+      - REDIS_REPLICATION_MODE=slave
+      - REDIS_MASTER_HOST=mentoree-redis-master
+      - REDIS_MASTER_PASSWORD=1234qwer
+      - REDIS_PASSWORD=1234qwer
+    ports:
+      - '6381:6379'
+    networks:
+      - mentoree-network
+    depends_on:
+      - mentoree-redis-master
+
+  mentoree-redis-sentinel:
+    image: 'bitnami/redis-sentinel:latest'
+    environment:
+      - REDIS_MASTER_HOST=mentoree-redis-master
+      - REDIS_MASTER_PASSWORD=1234qwer
+      - REDIS_SENTINEL_PORT_NUMBER=15001
+      - REDIS_SENTINEL_PASSWORD=1234qwer
+    depends_on:
+      - mentoree-redis-master
+      - mentoree-redis-slave-1
+      - mentoree-redis-slave-2
+    ports:
+      - "15001-15003:15001"
+    networks:
+      - mentoree-network
+
+  mentoree-backend:
+    image: wer080/mentoree-backend:1.0
+    container_name: mentoree-backend
+    networks:
+      - mentoree-network
+    ports:
+      - "8081:8081"
+    volumes:
+      - mentoree-persistence:/app/backend/
+    environment:
+      - PROFILE=real
+      - ENCKEY=testkey
+      - REDIS_HOST=mentoree-redis-master
+    links:
+      - mentoree-redis-master
+      - mentoree-redis-slave-1
+      - mentoree-redis-slave-2
+      - mentoree-redis-sentinel
+
+  mentoree-front:
+    image: wer080/mentoree-frontend:1.0
+    container_name: mentoree-front
+    networks:
+      - mentoree-network
+    ports:
+      - "80:80"
+    depends_on:
+      - mentoree-backend
