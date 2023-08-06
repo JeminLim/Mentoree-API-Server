@@ -34,6 +34,7 @@ public class SecurityConfig {
             "/api/members/join/**",
             "/images/**",
             "/login/oauth2/code/google",
+            "/login/oauth2/code/google/**"
     };
 
     @Bean
