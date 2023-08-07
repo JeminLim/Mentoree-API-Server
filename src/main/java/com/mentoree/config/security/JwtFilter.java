@@ -38,6 +38,8 @@ public class JwtFilter extends OncePerRequestFilter {
                                     HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             if (!permitAllURICheck(request)) {
+                log.info("JWT Token apply ...");
+                log.info("request = {}", request.getRequestURI());
                 String accessToken = request.getHeader("Authorization").substring(7);
                 UsernamePasswordAuthenticationToken authentication = getAuthenticationFromToken(accessToken);
 
