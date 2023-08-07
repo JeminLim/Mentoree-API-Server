@@ -70,7 +70,8 @@ public class SecurityConfig {
                                         "/api/reissue",
                                         "/api/programs/categories",
                                         "/api/login/**",
-                                        "/login/oauth2/code/google"
+                                        "/login/oauth2/code/google",
+                                        "/login/oauth2/code/google/**"
                 ).permitAll()
                 .anyRequest().authenticated()
                 .and().exceptionHandling()
