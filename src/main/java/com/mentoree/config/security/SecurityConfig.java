@@ -33,8 +33,7 @@ public class SecurityConfig {
             "/api/members/join",
             "/api/members/join/**",
             "/images/**",
-            "/login/oauth2/code/google",
-            "/login/oauth2/code/google/**"
+            "/login/**",
     };
 
     @Bean
@@ -70,8 +69,7 @@ public class SecurityConfig {
                                         "/api/reissue",
                                         "/api/programs/categories",
                                         "/api/login/**",
-                                        "/login/oauth2/code/google",
-                                        "/login/oauth2/code/google/**"
+                                        "/login/**"
                 ).permitAll()
                 .anyRequest().authenticated()
                 .and().exceptionHandling()
