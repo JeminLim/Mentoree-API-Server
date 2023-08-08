@@ -1,10 +1,12 @@
 package com.mentoree.config.security;
 
+import com.mentoree.config.security.oauth.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.mentoree.config.utils.AESUtils;
 import com.mentoree.config.utils.EncryptUtils;
 import com.mentoree.config.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 
+@Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
@@ -33,7 +36,8 @@ public class SecurityConfig {
             "/api/members/join",
             "/api/members/join/**",
             "/images/**",
-            "/login/**",
+            "/oauth2/authorize",
+            "/login/oauth2/code/**"
     };
 
     @Bean
@@ -52,10 +56,18 @@ public class SecurityConfig {
                 .permitAll();
 
         security.oauth2Login()
-                .userInfoEndpoint()
-                .userService(customUserDetailService)
+                .authorizationEndpoint().baseUri("/oauth2/authorize")
+                .authorizationRequestRepository(cookieOAuth2AuthorizationRequestRepository())
+                .and()
+                .redirectionEndpoint().baseUri("/login/oauth2/code/**")
+                .and()
+                .userInfoEndpoint().userService(customUserDetailService)
                 .and()
                 .defaultSuccessUrl("/api/login/success");
+//                .userInfoEndpoint()
+//                .userService(customUserDetailService)
+//                .and()
+//                .defaultSuccessUrl("/api/login/success");
 
         security.logout()
                 .logoutUrl("/logout")
@@ -69,7 +81,8 @@ public class SecurityConfig {
                                         "/api/reissue",
                                         "/api/programs/categories",
                                         "/api/login/**",
-                                        "/login/**"
+                        "/oauth2/authorize",
+                        "/login/oauth2/code/**"
                 ).permitAll()
                 .anyRequest().authenticated()
                 .and().exceptionHandling()
@@ -102,5 +115,10 @@ public class SecurityConfig {
     @Bean
     public EncryptUtils encryptUtils() {
         return new AESUtils();
+    }
+
+    @Bean
+    public HttpCookieOAuth2AuthorizationRequestRepository cookieOAuth2AuthorizationRequestRepository() {
+        return new HttpCookieOAuth2AuthorizationRequestRepository();
     }
 }
