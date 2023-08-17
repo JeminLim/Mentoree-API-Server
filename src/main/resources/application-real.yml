@@ -80,3 +80,12 @@ cloud:
     s3:
       bucket: cicd-mentoree-s3
       dir: /images
+
+oauth2:
+  google:
+    token:
+      url: "https://oauth2.googleapis.com/token"
+    login:
+      url: "https://acounts.google.com"
+    redirect:
+      uri: "https://mentoree.tk/oauth2/redirect"
