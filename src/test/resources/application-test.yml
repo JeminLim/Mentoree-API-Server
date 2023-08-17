@@ -76,3 +76,12 @@ cloud:
       auto: false
     s3:
       bucket: mentoree-s3-bucket
+
+oauth2:
+  google:
+    token:
+      url: "https://oauth2.googleapis.com"
+    login:
+      url: "https://acounts.google.com"
+    redirect:
+      uri: "http://localhost:8080/api/login/oauth/google/redirect"

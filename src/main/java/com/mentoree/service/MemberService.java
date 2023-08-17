@@ -1,9 +1,7 @@
 package com.mentoree.service;
 
-import com.mentoree.domain.entity.Career;
-import com.mentoree.domain.entity.Member;
-import com.mentoree.domain.entity.Mentee;
-import com.mentoree.domain.entity.Mentor;
+import com.mentoree.config.security.AuthenticateUser;
+import com.mentoree.domain.entity.*;
 import com.mentoree.domain.repository.*;
 import com.mentoree.exception.DuplicateDataException;
 import com.mentoree.exception.NoDataFoundException;
@@ -19,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,11 +37,32 @@ public class MemberService {
         }
         memberRepository.save(signUpRequest.toEntity("FORM", passwordEncoder));
     }
+    @Transactional
+    public AuthenticateUser singUp(String email, String name) {
+        if(emailCheck(email))
+            throw new DuplicateDataException(Member.class, "Member already exist");
 
+        Member googleSignUpMember = Member.builder()
+                .email(email)
+                .nickname("GOOGLE_" + UUID.randomUUID().toString().substring(10))
+                .username(name)
+                .oAuthId("google")
+                .role(UserRole.MENTEE)
+                .userPassword(UUID.randomUUID().toString().substring(10))
+                .build();
+
+        return AuthenticateUser.of(memberRepository.save(googleSignUpMember));
+    }
     @Transactional
     public MemberProfileDto getProfile(Long memberId) {
         Member findMember = memberRepository.findById(memberId).orElseThrow(NoDataFoundException::new);
         return MemberProfileDto.of(findMember);
+    }
+
+    @Transactional
+    public AuthenticateUser getProfile(String email) {
+        Member findMember = memberRepository.findByEmail(email).orElseThrow(NoDataFoundException::new);
+        return AuthenticateUser.of(findMember);
     }
 
     @Transactional
@@ -71,12 +91,26 @@ public class MemberService {
         Member findMember = memberRepository.findById(memberId).orElseThrow(NoDataFoundException::new);
         List<Mentor> participatedMentorList = mentorRepository.findAllByMemberId(memberId);
         List<Mentee> participatedMenteeList = menteeRepository.findAllParticipatedMentee(memberId);
+        Map<String, Object> result = getMemberProfile(findMember, participatedMentorList, participatedMenteeList);
 
+        return result;
+    }
+
+    @Transactional
+    public Map<String, Object> login(String email) {
+        Member findMember = memberRepository.findByEmail(email).orElseThrow(NoDataFoundException::new);
+        List<Mentor> participatedMentorList = mentorRepository.findAllByMemberId(findMember.getId());
+        List<Mentee> participatedMenteeList = menteeRepository.findAllParticipatedMentee(findMember.getId());
+        Map<String, Object> result = getMemberProfile(findMember, participatedMentorList, participatedMenteeList);
+        return result;
+    }
+
+
+    private static Map<String, Object> getMemberProfile(Member findMember, List<Mentor> participatedMentorList, List<Mentee> participatedMenteeList) {
         Map<String, Object> result = new HashMap<>();
         result.put("MemberProfile", MemberProfileDto.of(findMember));
         result.put("ParticipatedMentor", participatedMentorList.stream().map(MentorDto::of).collect(Collectors.toList()));
         result.put("ParticipatedMentee", participatedMenteeList.stream().map(MenteeDto::of).collect(Collectors.toList()));
-
         return result;
     }
 

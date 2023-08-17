@@ -1,6 +1,5 @@
 package com.mentoree.config.security;
 
-import com.mentoree.config.security.oauth.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.mentoree.config.utils.AESUtils;
 import com.mentoree.config.utils.EncryptUtils;
 import com.mentoree.config.utils.JwtUtils;
@@ -27,7 +26,9 @@ public class SecurityConfig {
     private final JwtUtils jwtUtils;
 
     private final String[] NO_AUTH_PATH = {
+            "/favicon.ico",
             "/api/login",
+            "/api/oauth/login",
             "/api/logout",
             "/api/login/**",
             "/api/reissue",
@@ -36,8 +37,8 @@ public class SecurityConfig {
             "/api/members/join",
             "/api/members/join/**",
             "/images/**",
-            "/oauth2/authorize",
-            "/login/oauth2/code/**"
+            "/api/login/oauth/google",
+            "/api/login/oauth/**"
     };
 
     @Bean
@@ -56,18 +57,8 @@ public class SecurityConfig {
                 .permitAll();
 
         security.oauth2Login()
-                .authorizationEndpoint().baseUri("/oauth2/authorize")
-                .authorizationRequestRepository(cookieOAuth2AuthorizationRequestRepository())
-                .and()
-                .redirectionEndpoint().baseUri("/login/oauth2/code/**")
-                .and()
-                .userInfoEndpoint().userService(customUserDetailService)
-                .and()
-                .defaultSuccessUrl("/api/login/success");
-//                .userInfoEndpoint()
-//                .userService(customUserDetailService)
-//                .and()
-//                .defaultSuccessUrl("/api/login/success");
+                .userInfoEndpoint()
+                .userService(customUserDetailService);
 
         security.logout()
                 .logoutUrl("/logout")
@@ -81,8 +72,8 @@ public class SecurityConfig {
                                         "/api/reissue",
                                         "/api/programs/categories",
                                         "/api/login/**",
-                        "/oauth2/authorize",
-                        "/login/oauth2/code/**"
+                                        "/api/login/oauth/**",
+                                        "/api/login/oauth/google"
                 ).permitAll()
                 .anyRequest().authenticated()
                 .and().exceptionHandling()
@@ -115,10 +106,5 @@ public class SecurityConfig {
     @Bean
     public EncryptUtils encryptUtils() {
         return new AESUtils();
-    }
-
-    @Bean
-    public HttpCookieOAuth2AuthorizationRequestRepository cookieOAuth2AuthorizationRequestRepository() {
-        return new HttpCookieOAuth2AuthorizationRequestRepository();
     }
 }

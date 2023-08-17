@@ -22,10 +22,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -47,7 +49,6 @@ public class LoginApiController {
 
     @PostMapping("/login/success")
     public ResponseEntity loginSuccess() {
-
         Map<String, Object> userDetails = extractUserDetails();
         Long memberId = (Long) userDetails.get("id");
         String email = (String) userDetails.get("email");
@@ -149,4 +150,5 @@ public class LoginApiController {
         builder.httpOnly(true);
         return builder;
     }
+
 }
