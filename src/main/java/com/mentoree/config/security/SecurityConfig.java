@@ -1,5 +1,6 @@
 package com.mentoree.config.security;
 
+import com.mentoree.config.redis.service.TokenService;
 import com.mentoree.config.utils.AESUtils;
 import com.mentoree.config.utils.EncryptUtils;
 import com.mentoree.config.utils.JwtUtils;
@@ -22,7 +23,9 @@ import org.springframework.security.web.authentication.logout.LogoutFilter;
 public class SecurityConfig {
 
     private final CustomUserDetailService customUserDetailService;
+    private final TokenService tokenService;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+
     private final JwtUtils jwtUtils;
 
     private final String[] NO_AUTH_PATH = {
@@ -47,7 +50,8 @@ public class SecurityConfig {
         security.httpBasic().disable()
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and().cors();
+                .and()
+                .cors();
 
         security.formLogin()
                 .loginProcessingUrl("/api/login")
@@ -60,20 +64,18 @@ public class SecurityConfig {
                 .userInfoEndpoint()
                 .userService(customUserDetailService);
 
-        security.logout()
-                .logoutUrl("/logout")
-                .deleteCookies("REFRESHTOKEN");
-
         security.authorizeRequests()
-                .antMatchers(           "/images/**",
-                                        "/api/members/join/**",
-                                        "/api/programs/list",
-                                        "/api/programs/{\\d+}",
-                                        "/api/reissue",
-                                        "/api/programs/categories",
-                                        "/api/login/**",
-                                        "/api/login/oauth/**",
-                                        "/api/login/oauth/google"
+                .antMatchers(
+                        "/images/**",
+                                    "/api/logout",
+                                    "/api/members/join/**",
+                                    "/api/programs/list",
+                                    "/api/programs/{\\d+}",
+                                    "/api/reissue",
+                                    "/api/programs/categories",
+                                    "/api/login/**",
+                                    "/api/login/oauth/**",
+                                    "/api/login/oauth/google"
                 ).permitAll()
                 .anyRequest().authenticated()
                 .and().exceptionHandling()
@@ -99,7 +101,7 @@ public class SecurityConfig {
 
     @Bean
     public JwtFilter jwtFilter() {
-        JwtFilter jwtFilter = new JwtFilter(jwtUtils, NO_AUTH_PATH);
+        JwtFilter jwtFilter = new JwtFilter(jwtUtils, tokenService, NO_AUTH_PATH);
         return jwtFilter;
     }
 
