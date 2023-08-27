@@ -30,7 +30,6 @@ public class RedisUtils {
 
         if(value == null)
             return Optional.empty();
-
         try {
             return Optional.of(objectMapper.readValue(value, classType));
         } catch (JsonProcessingException e) {
