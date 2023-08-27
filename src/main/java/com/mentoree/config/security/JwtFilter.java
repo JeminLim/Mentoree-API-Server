@@ -2,6 +2,9 @@ package com.mentoree.config.security;
 
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.mentoree.api.advice.response.ErrorCode;
+import com.mentoree.config.redis.Entity.BlacklistToken;
+import com.mentoree.config.redis.repository.BlacklistTokenRepository;
+import com.mentoree.config.redis.service.TokenService;
 import com.mentoree.config.utils.JwtUtils;
 import com.mentoree.exception.InvalidTokenException;
 import lombok.RequiredArgsConstructor;
@@ -20,28 +23,33 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 public class JwtFilter extends OncePerRequestFilter {
 
     private JwtUtils jwtUtils;
     private String[] permitAllList;
+    private TokenService tokenService;
 
-    public JwtFilter(JwtUtils jwtUtils, String[] uriList) {
+    public JwtFilter(JwtUtils jwtUtils, TokenService tokenService, String[] uriList) {
         this.jwtUtils = jwtUtils;
         this.permitAllList = uriList;
+        this.tokenService = tokenService;
     }
 
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        log.info("jwt filter . . .");
         try {
             if (!permitAllURICheck(request)) {
-                log.info("JWT Token apply ...");
-                log.info("request = {}", request.getRequestURI());
                 String accessToken = request.getHeader("Authorization").substring(7);
                 UsernamePasswordAuthenticationToken authentication = getAuthenticationFromToken(accessToken);
+
+                if (tokenService.isBlacklist(accessToken))
+                    throw new InvalidTokenException("Used blocked Token", ErrorCode.INVALID_TOKEN);
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }

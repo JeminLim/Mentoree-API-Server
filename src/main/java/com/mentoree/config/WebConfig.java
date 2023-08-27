@@ -29,6 +29,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Value("${server.origins.address}")
     private String originAddr;
+    private final int FRONT_PORT = 8081;
 
     private final MentorRepository mentorRepository;
     private final MenteeRepository menteeRepository;
@@ -52,7 +53,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("https://" + originAddr)
+                .allowedOrigins(originAddr + ":" + FRONT_PORT)
                 .allowedMethods("POST", "GET", "DELETE", "PUT");
     }
 
@@ -67,7 +68,7 @@ public class WebConfig implements WebMvcConfigurer {
     public FilterRegistrationBean<Filter> filterRegistrationBean() {
         FilterRegistrationBean<Filter> filter = new FilterRegistrationBean<>();
         filter.setFilter(new TemporalLoggingFilter());
-        filter.addUrlPatterns("/api/*");
+        filter.addUrlPatterns("/api/**");
         return filter;
     }
 

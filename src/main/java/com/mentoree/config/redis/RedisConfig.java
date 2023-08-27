@@ -15,7 +15,9 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -23,19 +25,22 @@ import java.util.stream.Collectors;
 @Configuration
 @RequiredArgsConstructor
 public class RedisConfig {
-
     private  final RedisProperties redisProperties;
+
+
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
 
-        List<String> nodes = redisProperties.getSentinel().getNodes();
-
         RedisSentinelConfiguration sentinelConfig = new RedisSentinelConfiguration()
                 .master(redisProperties.getSentinel().getMaster());
-        redisProperties.getSentinel().getNodes()
-                .forEach(n -> sentinelConfig.sentinel("172.18.0.1", Integer.valueOf(n.split(":")[1])));
-        sentinelConfig.setPassword(RedisPassword.of(redisProperties.getPassword()));
-        sentinelConfig.setSentinelPassword(RedisPassword.of(redisProperties.getPassword()));
+
+        Set<RedisNode> sentinelNodes = new HashSet<>();
+        for (String node : redisProperties.getSentinel().getNodes()) {
+            String[] parts = node.split(":");
+            sentinelNodes.add(new RedisNode(parts[0], Integer.parseInt(parts[1])));
+        }
+        sentinelConfig.setSentinels(sentinelNodes);
+        sentinelConfig.setPassword(RedisPassword.of("1234qwer"));
 
         return new LettuceConnectionFactory(sentinelConfig);
     }
