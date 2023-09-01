@@ -36,3 +36,47 @@
 * 스프링 시큐리티, JWT
 * Java 11
 ---
+
+## 기능구현
+* 프로그램 목록 조회 및 필터링    
+  > 프로그램 목록을 조회하거나 카테고리에 따른 프로그램을 필터링해서 조회할 수 있습니다.
+        
+![program_list](https://github.com/JeminLim/Mentoree-API-Server/assets/65437310/9356491f-a50e-488b-8c63-7bb49a2269b2)    
+![program_filter](https://github.com/JeminLim/Mentoree-API-Server/assets/65437310/d96ba16c-5a78-471d-b7f8-007e38c20ea5)
+
+* 폼 로그인 및 소셜 로그인
+  > 폼 로그인 또는 구글을 이용한 OAuth 로그인을 할 수 있습니다.    
+
+![form_login](https://github.com/JeminLim/Mentoree-API-Server/assets/65437310/aa78bfe1-5d7e-46b2-b807-b9b23e141720)    
+![oauth_login](https://github.com/JeminLim/Mentoree-API-Server/assets/65437310/13fe927e-cde6-4895-b451-618e199f017b)    
+
+
+* 프로그램 개설
+  > 프로그램을 개설해서 멘티를 모집할 수 있습니다.
+      
+![program_create](https://github.com/JeminLim/Mentoree-API-Server/assets/65437310/1fbcfe9c-3c3c-4ffb-9979-d2c767b9f9a5)
+
+  
+* 프로그램 신청 및 관리
+  > 프로그램 신청 및 프로그램 개설자는 신청자에 대한 승낙/거절 을 할 수 있습니다.    
+
+![apply_program](https://github.com/JeminLim/Mentoree-API-Server/assets/65437310/4c81bd1c-fca4-43c5-8109-8ee9a3659a52)     
+![apply_approve](https://github.com/JeminLim/Mentoree-API-Server/assets/65437310/d9dae545-2916-4957-9d8f-2080f24a415b)     
+
+  
+* 게시글 작성 및 임시저장
+  > 게시글을 작성할 수 있으며, 작성 중인 글은 자동으로 임시저장이 됩니다. 1분 주기 자동저장과 페이지 이동 시 임시저장이 이루어집니다.    
+
+
+![board_write](https://github.com/JeminLim/Mentoree-API-Server/assets/65437310/55998625-5e6c-4ced-9614-60b69b9b2a0f)
+
+
+
+
+---
+
+
+
+
+
+
