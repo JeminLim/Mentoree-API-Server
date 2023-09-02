@@ -5,7 +5,6 @@
 
 차후, 공부한 것을 덧붙여 나가며 지속적인 업데이트를 할 예정입니다.
 
-사이트: [mentoree.tk](https://mentoree.tk)    
 프로젝트 관련 기록: [블로그](https://devcabinet.tistory.com/)    
 
 ---
@@ -75,7 +74,16 @@
 
 ---
 
+## 프로젝트 구조
+![프로젝트구조](https://github.com/JeminLim/Mentoree-API-Server/assets/65437310/cd61f143-554d-484e-86e3-ab71dd0990d4)
 
+- api : 각 API controller와 advice 관련 요청에 대한 수신 및 결과를 반환에 관여합니다.
+- config : aop, filter, interceptor, redis, security 등 비지니스 로직 이외의 시스템에 관계되어 있는 패키지 입니다.
+- domain : entity와 repository로 구성하여, 도메인과 해당 연관 비지니스 로직을 함꼐 작성하였습니다.
+- exception : 각종 커스텀 예외를 작성한 패키지 입니다.
+- service : 비지니스 로직에 관련된 패키지 입니다.
+
+---
 
 
 
